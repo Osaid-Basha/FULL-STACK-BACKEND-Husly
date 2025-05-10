@@ -17,7 +17,7 @@ return new class extends Migration
           $table->string('title');
           $table->date('time');
           $table->integer('rating');
-          $table->foreignId('buying_id' )->constrained('buyings');
+         
         });
     }
 

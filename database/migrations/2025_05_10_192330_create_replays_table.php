@@ -15,8 +15,7 @@ return new class extends Migration
             $table->id();
             $table->timestamps();
             $table->string('message_content');
-            $table->foreignId('user_id')->constrained('users');
-            $table->foreignId('review_id')->constrained('replayables');
+
         });
     }
 
