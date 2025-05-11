@@ -21,6 +21,7 @@ class property extends Model
         'livingArea',
 
         'property_type_id',
+        'property_listing_id',
         'user_id',
         'purchase_id',
         'amenity_id'

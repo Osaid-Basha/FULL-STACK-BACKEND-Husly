@@ -17,8 +17,13 @@ return new class extends Migration
             $table->string('type')->nullable();
             $table->date('date')->nullable();
 
-//            $table->unsignedBigInteger('proparty_id')->nullable();
-//            $table->unsignedBigInteger('user_id')->nullable();
+
+
+            $table->foreignId('property_id')->constrained('properties')->onDelete('cascade');
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+
+
+            $table->timestamps();
         });
     }
 
