@@ -10,7 +10,12 @@ class role extends Model
     protected $fillable = [
 
         'id',
-        'tayp',
+        'type',
+        'user_id'
 
     ];
+    public function users()
+    {
+        return $this->belongsToMany(User::class, 'role_users');
+    }
 }

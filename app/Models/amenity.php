@@ -8,5 +8,12 @@ class amenity extends Model
 {
     protected $fillable = [
         'name',
+        'property_id'
+
     ];
+    public function properties()
+    {
+        return $this->belongsToMany(Property::class, 'proparty_amenities');
+    }
+
 }

@@ -22,6 +22,8 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
+
+        'role_id',
     ];
 
     /**
@@ -46,4 +48,50 @@ class User extends Authenticatable
             'password' => 'hashed',
         ];
     }
+    public function property()
+    {
+        return $this->hasMany(Property::class);
+    }
+    public function favorites()
+    {
+        return $this->hasMany(Favorites::class);
+    }
+    public function purchase()
+    {
+        return $this->hasOne(Purchase::class);
+    }
+    public function buying()
+    {
+        return $this->hasMany(BuyingRequest::class);
+    }
+    public function replay ()
+    {
+        return $this->hasMany(Replay::class);
+    }
+    public function notifaction()
+    {
+        return $this->hasMany(Notification::class);
+    }
+
+    public function sentMessages()
+    {
+        return $this->hasMany(Message::class, 'sender_id');
+    }
+
+    public function receivedMessages()
+    {
+        return $this->hasMany(Message::class, 'receiver_id');
+    }
+    public function profile()
+    {
+        return $this->hasOne(Profile::class);
+    }
+    public function role()
+    {
+        return $this->belongsToMany(Role::class, 'role_users');
+    }
+
+
+
+
 }

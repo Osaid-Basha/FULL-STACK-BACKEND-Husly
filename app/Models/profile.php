@@ -4,10 +4,9 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class profail extends Model
+class profile extends Model
 {
-    //
-    protected $fillable = [
+     protected $fillable = [
         'name',
         'imag_path',
         'facebook_url',
@@ -16,6 +15,11 @@ class profail extends Model
         'linkedin_url',
         'current_position',
         'phone',
-        'location'
+        'location',
+        'user_id'
     ];
+    public function user()
+    {
+        return $this->hasOne(User::class);
+    }
 }

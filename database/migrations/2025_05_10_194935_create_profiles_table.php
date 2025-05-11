@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('profails', function (Blueprint $table) {
+        Schema::create('profiles', function (Blueprint $table) {
              $table->id();
             $table->string('name')->nullable();
             $table->string('imag_path')->nullable();
