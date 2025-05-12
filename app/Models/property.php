@@ -45,10 +45,7 @@ class property extends Model
     {
         return $this->belongsTo(purchase::class);
     }
-    public function buying()
-    {
-        return $this->hasMany(BuyingRequest::class);
-    }
+
     public function user()
     {
         return $this->belongsTo(User::class);
@@ -60,6 +57,10 @@ class property extends Model
     public function amenity()
     {
         return $this->belongsToMany(amenity::class, 'property_amenity');
+    }
+    public function negotiation()
+    {
+        return $this->hasMany(negotiation::class);
     }
 
 

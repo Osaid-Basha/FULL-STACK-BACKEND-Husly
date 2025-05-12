@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('profiles', function (Blueprint $table) {
              $table->id();
-            $table->string('name')->nullable();
+
             $table->string('imag_path')->nullable();
             $table->string('facebook_url')->nullable();
             $table->string('instagram_url')->nullable();
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->string('current_position')->nullable();
             $table->string('phone')->nullable();
             $table->string('location')->nullable();
-            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+           $table->foreignId('user_id')->unique()->constrained('users')->onDelete('cascade');
             $table->timestamps();
         });
     }

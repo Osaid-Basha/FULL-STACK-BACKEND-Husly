@@ -60,17 +60,15 @@ class User extends Authenticatable
     {
         return $this->hasOne(Purchase::class);
     }
-    public function buying()
-    {
-        return $this->hasMany(BuyingRequest::class);
-    }
+
     public function replay ()
     {
         return $this->hasMany(Replay::class);
     }
-    public function notifaction()
+    public function notifications()
     {
-        return $this->hasMany(Notification::class);
+        return $this->belongsToMany(Notification::class, 'user_notifications');
+
     }
 
     public function sentMessages()
@@ -89,6 +87,10 @@ class User extends Authenticatable
     public function role()
     {
         return $this->belongsToMany(Role::class, 'role_users');
+    }
+    public function negotiation()
+    {
+        return $this->belongsToMany(Negotiation::class, 'negotiation_user');
     }
 
 

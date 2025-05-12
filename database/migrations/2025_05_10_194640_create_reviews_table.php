@@ -15,10 +15,10 @@ return new class extends Migration
             $table->id();
             $table->string('content');
           $table->string('title');
-          $table->date('time');
+
           $table->integer('rating');
-            $table->foreignId('buying_id')->constrained('buying_requests')->onDelete('cascade');
-           
+            $table->foreignId('buying_id')->unique()->constrained('buying_requests')->onDelete('cascade');
+
 
 
             $table->timestamps();

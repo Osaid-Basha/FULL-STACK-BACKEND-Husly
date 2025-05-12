@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class profile extends Model
 {
      protected $fillable = [
-        'name',
+
         'imag_path',
         'facebook_url',
         'instagram_url',

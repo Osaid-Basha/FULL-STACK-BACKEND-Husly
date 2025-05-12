@@ -9,6 +9,6 @@ class notification extends Model
     protected $fillable = ['message', 'user_id'];
     public function user()
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsToMany(User::class, 'notifiction_user',);
     }
 }

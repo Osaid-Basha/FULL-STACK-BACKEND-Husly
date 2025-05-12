@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('type');
             $table->string('message_content');
-            $table->foreignId('user_id')->constrained('users');
+            $table->timestamp('read_at')->nullable();
+            $table->string('status')->nullable();
             $table->timestamps();
         });
     }
