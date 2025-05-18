@@ -9,6 +9,137 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/admin/users": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Get all users for admin",
+                "operationId": "ebcc259495a30fb7726d8f93fc8653bd",
+                "responses": {
+                    "200": {
+                        "description": "A list of all users"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Add a new user",
+                "operationId": "af0b58ac2efff3db20073abe19833b54",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "email"
+                                ],
+                                "properties": {
+                                    "first_name": {
+                                        "type": "string"
+                                    },
+                                    "last_name": {
+                                        "type": "string"
+                                    },
+                                    "email": {
+                                        "type": "string"
+                                    },
+                                    "password": {
+                                        "type": "string"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User created successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "first_name": {
+                                            "type": "string"
+                                        },
+                                        "last_name": {
+                                            "type": "string"
+                                        },
+                                        "email": {
+                                            "type": "string"
+                                        },
+                                        "password": {
+                                            "type": "string"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/admin/users/approve/{id}": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Approve a user request",
+                "operationId": "0f1b2398156c9f088b214c5747ea1d43",
+                "responses": {
+                    "200": {
+                        "description": "A list of all users"
+                    }
+                }
+            }
+        },
+        "/api/admin/users/reject/{id}": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Reject a user request",
+                "operationId": "65519f8c32cb713458e231180e3ffa47",
+                "responses": {
+                    "200": {
+                        "description": "A list of all users"
+                    }
+                }
+            }
+        },
+        "/api/admin/users/search/{keyword}": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Search users by keyword",
+                "operationId": "4a60c1a65fa51677f3a0412e5c7351b4",
+                "responses": {
+                    "200": {
+                        "description": "A list of all users"
+                    }
+                }
+            }
+        },
+        "/api/admin/users/{id}": {
+            "delete": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Delete a user by ID",
+                "operationId": "4a6b2ff9656c3475af27c8aa32c2980e",
+                "responses": {
+                    "200": {
+                        "description": "User deleted successfully"
+                    }
+                }
+            }
+        },
         "/api/properties": {
             "get": {
                 "tags": [
@@ -41,7 +172,6 @@
                     "Users"
                 ],
                 "summary": "Create a new user",
-                "description": "* @OA\\Post(\n   path=\"/api/users\",\n\n summary=\"Create a new user\",\ntags={\"Users\"},",
                 "operationId": "15cb7ac620df8a65f737624b240b8976",
                 "requestBody": {
                     "required": true,
@@ -53,7 +183,10 @@
                                     "email"
                                 ],
                                 "properties": {
-                                    "name": {
+                                    "first_name": {
+                                        "type": "string"
+                                    },
+                                    "last_name": {
                                         "type": "string"
                                     },
                                     "email": {
@@ -75,22 +208,17 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "id": {
-                                            "type": "integer"
+                                        "first_name": {
+                                            "type": "string"
                                         },
-                                        "name": {
+                                        "last_name": {
                                             "type": "string"
                                         },
                                         "email": {
                                             "type": "string"
                                         },
-                                        "created_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "format": "date-time"
+                                        "password": {
+                                            "type": "string"
                                         }
                                     },
                                     "type": "object"
@@ -156,7 +284,6 @@
                     "Users"
                 ],
                 "summary": "Update a user by ID",
-                "description": "* @OA\\Put(\n  path=\"/api/users/{id}\",\n summary=\"Update a user by ID\",\ntags={\"Users\"},",
                 "operationId": "1c2c1eb9faac63c5a992039dfc44acec",
                 "parameters": [
                     {
@@ -266,6 +393,10 @@
         }
     },
     "tags": [
+        {
+            "name": "Admin",
+            "description": "Admin"
+        },
         {
             "name": "Properties",
             "description": "Properties"

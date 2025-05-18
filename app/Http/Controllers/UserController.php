@@ -68,48 +68,48 @@ class UserController extends Controller
        }
 
    }
-
-
-
-/**
- *
- * * @OA\Post(
- *    path="/api/users",
- *
- *  summary="Create a new user",
- * tags={"Users"},
- * @OA\RequestBody(
- *    required=true,
- *   @OA\JsonContent(
- *       required={"name", "email"},
- *      @OA\Property(property="name", type="string"),
- *     @OA\Property(property="email", type="string"),
- *    @OA\Property(property="password", type="string"),
- *
- *   )
- * ),
- * @OA\Response(
- *   response=201,
- *  description="User created successfully",
- * @OA\JsonContent(
- *       type="object",
- *      @OA\Property(property="id", type="integer"),
- *     @OA\Property(property="name", type="string"),
- *    @OA\Property(property="email", type="string"),
- *   @OA\Property(property="created_at", type="string", format="date-time"),
- *  @OA\Property(property="updated_at", type="string", format="date-time")
- *  )
- * )
- * )
- */
+    /**
+     *
+     *  @OA\Post(
+     *    path="/api/users",
+     *
+     *  summary="Create a new user",
+     * tags={"Users"},
+     * @OA\RequestBody(
+     *    required=true,
+     *   @OA\JsonContent(
+     *       required={"name", "email"},
+     *      @OA\Property(property="first_name", type="string"),
+     *     @OA\Property(property="last_name", type="string"),
+     *    @OA\Property(property="email", type="string"),
+     *   @OA\Property(property="password", type="string"),
+     *
+     *   )
+     * ),
+     * @OA\Response(
+     *   response=201,
+     *  description="User created successfully",
+     * @OA\JsonContent(
+     *       type="object",
+     *      @OA\Property(property="first_name", type="string"),
+     *     @OA\Property(property="last_name", type="string"),
+     *     @OA\Property(property="email", type="string"),
+     *    @OA\Property(property="password", type="string"),
+     *
+     *   )
+     * )
+     * )
+     */
    public function createUser(Request $request)
    {
        // Your logic to create a new user
        $user = User::create($request->all());
        return response()->json($user, 201);
    }
+
+
 /**
- * * @OA\Put(
+ *  @OA\Put(
  *   path="/api/users/{id}",
  *  summary="Update a user by ID",
  * tags={"Users"},
