@@ -4,7 +4,8 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class property extends Model
+
+class Property extends Model
 {
     protected $fillable = [
         'address',
@@ -19,6 +20,7 @@ class property extends Model
         'shortDescreption',
         'constructionArea',
         'livingArea',
+        'available',
 
         'property_type_id',
         'property_listing_id',
@@ -43,7 +45,7 @@ class property extends Model
 
     public function purchase()
     {
-        return $this->belongsTo(purchase::class);
+        return $this->belongsTo(Purchase::class);
     }
 
     public function user()
