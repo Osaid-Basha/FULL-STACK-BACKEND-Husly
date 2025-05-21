@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class favorites extends Model
+class Favorites extends Model
 {
     //
     protected $fillable = [
@@ -18,6 +18,6 @@ class favorites extends Model
     }
     public function property()
     {
-        return $this->belongsTo(property::class);
+        return $this->belongsTo(Property::class);
     }
 }
