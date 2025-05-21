@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('listing_types', function (Blueprint $table) {
             $table->id();
-                 $table->string('type')->nullable();
+            $table->string('type')->nullable();
             $table->timestamps();
         });
     }

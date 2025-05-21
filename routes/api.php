@@ -47,6 +47,13 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 Route::middleware(['auth:sanctum','buyer'])->prefix('buyer')->group(function () {
     Route::post('/negotiations/propose', [NegotiationController::class, 'propose']);
     Route::post('/reviews', [ReviewController::class, 'storeReview']);
+    Route::get('/properties', [PropertyBuyerController::class, 'getAllProperties']);
+    Route::get('/properties/search', [PropertyBuyerController::class, 'search']);
+    Route::get('/agents/search/{keyword}', [BuyerController::class, 'searchAgents']);
+    Route::get('/properties/{id}', [PropertyBuyerController::class, 'show']);
+    Route::get('/agents', [BuyerController::class, 'getAllAgents']);
+    Route::get('/agents/{id}', [BuyerController::class, 'getAgentById']);
+
 });
 
 // Agent routes
@@ -65,22 +72,5 @@ Route::middleware(['auth:sanctum','agent'])->prefix('agent')->group(function () 
 
 
 
-/* Route::get('/users', [UserController::class, 'getallUsers']);
-Route::get('/users/{id}', [UserController::class, 'getUserById']);
-Route::post('/users', [UserController::class, 'createUser']);
-Route::put('/users/{id}', [UserController::class, 'updateUser']);
-Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
-Route::get('/users/{keyword}', [UserController::class, 'searchUsers']);
 
-Route::get('/properties', [PropertyBuyerController::class, 'getAllProperties']);
-//البحث
-Route::get('/properties/search', [PropertyBuyerController::class, 'search']);
-//البحث عن وكيل
-Route::get('/agents/search/{keyword}', [BuyerController::class, 'searchAgents']);
-//تفاصيل العقار
-Route::get('/properties/{id}', [PropertyBuyerController::class, 'show']);
-//كل الوكلاء
-Route::get('/agents', [BuyerController::class, 'getAllAgents']);
-//تفاصيل الوكيل
-Route::get('/agents/{id}', [BuyerController::class, 'getAgentById']);
 
