@@ -9,33 +9,40 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/api/admin/users": {
+        "/api/users": {
             "get": {
                 "tags": [
                     "Admin"
                 ],
                 "summary": "Get all users for admin",
-                "operationId": "ebcc259495a30fb7726d8f93fc8653bd",
+                "operationId": "9ae473e4762fd14440b777120aa3f205",
                 "responses": {
                     "200": {
                         "description": "A list of all users"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
                     "Admin"
                 ],
                 "summary": "Add a new user",
-                "operationId": "af0b58ac2efff3db20073abe19833b54",
+                "operationId": "6553524bf96358d6d0af5ecba02714d5",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "name",
-                                    "email"
+                                    "first_name",
+                                    "last_name",
+                                    "email",
+                                    "password"
                                 ],
                                 "properties": {
                                     "first_name": {
@@ -81,77 +88,88 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
-        "/api/admin/users/approve/{id}": {
+        "/api/users/approve/{id}": {
             "put": {
                 "tags": [
                     "Admin"
                 ],
                 "summary": "Approve a user request",
-                "operationId": "0f1b2398156c9f088b214c5747ea1d43",
+                "operationId": "bbaa9432bad0246564492e3ee41961bd",
                 "responses": {
                     "200": {
-                        "description": "A list of all users"
+                        "description": "User approved successfully"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
-        "/api/admin/users/reject/{id}": {
+        "/api/users/reject/{id}": {
             "put": {
                 "tags": [
                     "Admin"
                 ],
                 "summary": "Reject a user request",
-                "operationId": "65519f8c32cb713458e231180e3ffa47",
+                "operationId": "a4dd32c400c32f5fc7ec0160a3ad5bf3",
                 "responses": {
                     "200": {
-                        "description": "A list of all users"
+                        "description": "User reject successfully"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
-        "/api/admin/users/search/{keyword}": {
+        "/api/users/search/{keyword}": {
             "get": {
                 "tags": [
                     "Admin"
                 ],
                 "summary": "Search users by keyword",
-                "operationId": "4a60c1a65fa51677f3a0412e5c7351b4",
+                "operationId": "92885853bcf78aaade3681d5de2e92ad",
                 "responses": {
                     "200": {
                         "description": "A list of all users"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
-        "/api/admin/users/{id}": {
+        "/api/users/{id}": {
             "delete": {
                 "tags": [
                     "Admin"
                 ],
                 "summary": "Delete a user by ID",
-                "operationId": "4a6b2ff9656c3475af27c8aa32c2980e",
+                "operationId": "91c9bfbf1bbf4d24b50a5b3fe5945b37",
                 "responses": {
                     "200": {
                         "description": "User deleted successfully"
                     }
-                }
-            }
-        },
-        "/api/properties": {
-            "get": {
-                "tags": [
-                    "Properties"
-                ],
-                "summary": "Get all properties",
-                "operationId": "93f6f24283a4d0eefb208f5481a56a73",
-                "responses": {
-                    "200": {
-                        "description": "A list of properties"
+                },
+                "security": [
+                    {
+                        "sanctum": []
                     }
-                }
+                ]
             }
         },
         "/api/register": {
@@ -160,44 +178,47 @@
                     "Authentication"
                 ],
                 "summary": "Register a new user",
-                "operationId": "2f25885f3b6f61ca11724ec302d2e439",
+                "operationId": "8a56853624e025573120a09a4c75d468",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "firstname",
-                                    "lastname",
+                                    "first_name",
+                                    "last_name",
                                     "email",
                                     "password",
                                     "confirm_password",
-                                    "user_type"
+                                    "role_id"
                                 ],
                                 "properties": {
-                                    "firstname": {
-                                        "type": "string"
+                                    "first_name": {
+                                        "type": "string",
+                                        "example": "Mohammad"
                                     },
-                                    "lastname": {
-                                        "type": "string"
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "Salem"
                                     },
                                     "email": {
                                         "type": "string",
-                                        "format": "email"
+                                        "format": "email",
+                                        "example": "mohammad@example.com"
                                     },
                                     "password": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "12345678"
                                     },
                                     "confirm_password": {
-                                        "type": "string"
-                                    },
-                                    "user_type": {
                                         "type": "string",
-                                        "enum": [
-                                            "buyer",
-                                            "seller",
-                                            "admin"
-                                        ]
+                                        "format": "password",
+                                        "example": "12345678"
+                                    },
+                                    "role_id": {
+                                        "type": "integer",
+                                        "example": 1
                                     }
                                 },
                                 "type": "object"
@@ -218,7 +239,7 @@
                     "Authentication"
                 ],
                 "summary": "Login user",
-                "operationId": "0fc9610184083ac6dddab2c63139225a",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
                 "requestBody": {
                     "required": true,
                     "content": {
@@ -227,23 +248,21 @@
                                 "required": [
                                     "email",
                                     "password",
-                                    "user_type"
+                                    "role"
                                 ],
                                 "properties": {
                                     "email": {
                                         "type": "string",
-                                        "format": "email"
+                                        "format": "email",
+                                        "example": "mohammad@example.com"
                                     },
                                     "password": {
-                                        "type": "string"
-                                    },
-                                    "user_type": {
                                         "type": "string",
-                                        "enum": [
-                                            "Buyer",
-                                            "Agent",
-                                            "Admin"
-                                        ]
+                                        "example": "12345678"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "example": "admin"
                                     }
                                 },
                                 "type": "object"
@@ -256,9 +275,9 @@
                         "description": "Login successfully"
                     },
                     "403": {
-                        "description": "User type mismatch"
+                        "description": "Role mismatch"
                     },
-                    "4001": {
+                    "401": {
                         "description": "Incorrect email or password"
                     }
                 }
@@ -270,174 +289,42 @@
                     "Authentication"
                 ],
                 "summary": "Logout the authenticated user",
-                "operationId": "67d5147477c548bfbc3f982833bbc7bd",
+                "operationId": "fe8f3429cd6979b3b4517e186505f9f9",
                 "responses": {
                     "200": {
-                        "description": "Logout successfully"
+                        "description": "Logged out successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
-        "/api/users": {
-            "get": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Get all users",
-                "operationId": "71188520e793e1d6782f3a4482c34d5e",
-                "responses": {
-                    "200": {
-                        "description": "A list of users"
-                    }
-                }
-            },
+        "/api/forgot-password": {
             "post": {
                 "tags": [
-                    "Users"
+                    "Authentication"
                 ],
-                "summary": "Create a new user",
-                "operationId": "15cb7ac620df8a65f737624b240b8976",
+                "summary": "Send password reset link to email",
+                "operationId": "b93bd61884f12f561e37f8459dd3a625",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "name",
                                     "email"
                                 ],
                                 "properties": {
-                                    "first_name": {
-                                        "type": "string"
-                                    },
-                                    "last_name": {
-                                        "type": "string"
-                                    },
                                     "email": {
-                                        "type": "string"
-                                    },
-                                    "password": {
-                                        "type": "string"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "User created successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "first_name": {
-                                            "type": "string"
-                                        },
-                                        "last_name": {
-                                            "type": "string"
-                                        },
-                                        "email": {
-                                            "type": "string"
-                                        },
-                                        "password": {
-                                            "type": "string"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        },
-        "/api/users/{id}": {
-            "get": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Get a user by ID",
-                "operationId": "8242536d482e67ca1a4607f836f473fe",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the user to get",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User details",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer"
-                                        },
-                                        "name": {
-                                            "type": "string"
-                                        },
-                                        "email": {
-                                            "type": "string"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Update a user by ID",
-                "operationId": "1c2c1eb9faac63c5a992039dfc44acec",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the user to update",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "name",
-                                    "email"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    },
-                                    "email": {
-                                        "type": "string"
-                                    },
-                                    "password": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "albashaosayd@example.com"
                                     }
                                 },
                                 "type": "object"
@@ -447,70 +334,116 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "User updated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer"
-                                        },
-                                        "name": {
-                                            "type": "string"
-                                        },
-                                        "email": {
-                                            "type": "string"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Delete a user by ID",
-                "operationId": "a0ce91d753f85c9a3caee8c136d70e4c",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the user to delete",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User deleted successfully"
+                        "description": "Reset link sent to your email."
+                    },
+                    "500": {
+                        "description": "Unable to send reset link."
                     }
                 }
             }
         },
-        "api/users/{keyword}": {
-            "get": {
+        "/api/verify-2fa": {
+            "post": {
                 "tags": [
-                    "Users"
+                    "Authentication"
                 ],
-                "summary": "Get all users",
-                "operationId": "9cbbc1cad2b2cd889c8607517ca545c5",
+                "summary": "Verify 2FA code",
+                "operationId": "ef04a8108d42942a7bb9fb8f73a9e2ff",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "code"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "code": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
-                        "description": "A list of users"
+                        "description": "2FA Verified Successfully"
+                    }
+                }
+            }
+        },
+        "/api/resetPassword": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Reset user password using token",
+                "operationId": "66d0a5c892b4deff44faa43cf7c4e86a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "token",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "token": {
+                                        "type": "string",
+                                        "example": "abcdef123456"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "osayd@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newpassword123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newpassword123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password has been reset"
+                    },
+                    "500": {
+                        "description": "Reset failed"
+                    }
+                }
+            }
+        },
+        "/api/properties": {
+            "get": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Get all properties",
+                "operationId": "93f6f24283a4d0eefb208f5481a56a73",
+                "responses": {
+                    "200": {
+                        "description": "A list of properties"
                     }
                 }
             }
@@ -522,16 +455,12 @@
             "description": "Admin"
         },
         {
-            "name": "Properties",
-            "description": "Properties"
-        },
-        {
             "name": "Authentication",
             "description": "Authentication"
         },
         {
-            "name": "Users",
-            "description": "Users"
+            "name": "Properties",
+            "description": "Properties"
         }
     ]
 }

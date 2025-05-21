@@ -58,10 +58,11 @@ class property extends Model
     {
         return $this->belongsToMany(amenity::class, 'property_amenity');
     }
-    public function negotiation()
-    {
-        return $this->hasMany(negotiation::class);
-    }
+    public function negotiations()
+{
+    return $this->hasMany(Negotiation::class);
+}
+
 
 
 }

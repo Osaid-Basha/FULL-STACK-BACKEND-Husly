@@ -4,20 +4,10 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\User;
+use App\Models\Property;
 
 class AdminController extends Controller
 {
-/**
- * @OA\Get(
- *     path="/api/admin/users",
- *     summary="Get all users for admin",
- *     tags={"Admin"},
- *     @OA\Response(
- *         response=200,
- *         description="A list of all users",
- *     )
- * )
- */
     public function getAllUsersAdmin(){
 
         $users=User::all();
@@ -26,72 +16,42 @@ class AdminController extends Controller
             'users'=>$users
         ]);
     }
-/**
- * @OA\Put(
- *    path="/api/admin/users/approve/{id}",
- *   summary="Approve a user request",
- *  tags={"Admin"},
- * @OA\Response(
- *         response=200,
- *         description="A list of all users",
- *     )
- * )
- */
-    public function ApproveUserRequest($id){
-        $user=User::find($id);
-        if($user){
-            $user->update(['status'=> 1]);
-            $user->save();
-            return response()->json([
-                'status'=>200,
-                'message'=>'User request approved successfully'
-            ]);
-        }else{
-            return response()->json([
-                'status'=>404,
-                'message'=>'User not found'
-            ]);
-        }
+    public function ApproveUserRequest($id)
+{
+    $user = User::find($id);
+
+    if (!$user) {
+        return response()->json([
+            'status' => 404,
+            'message' => 'User not found',
+        ]);
     }
-/**
- * @OA\Put(
- *    path="/api/admin/users/reject/{id}",
- *   summary="Reject a user request",
- *  tags={"Admin"},
- * @OA\Response(
- *         response=200,
- *         description="A list of all users",
- *     )
- * )
- */
-    public function RejectUserRequest($id){
-        $user=User::find($id);
-        if($user){
-            $user->update(['status'=>0]);
-            $user->save();
-            return response()->json([
-                'status'=>200,
-                'message'=>'User request rejected successfully'
-            ]);
-        }else{
-            return response()->json([
-                'status'=>404,
-                'message'=>'User not found'
-            ]);
-        }
+
+    $user->update(['status' => 1]);
+
+    return response()->json([
+        'status' => 200,
+        'message' => 'User approved successfully',
+        'user' => $user,
+    ]);
     }
-/**
- * @OA\Get(
- *     path="/api/admin/users/search/{keyword}",
- *     summary="Search users by keyword",
- *     tags={"Admin"},
- *
- *   @OA\Response(
- *         response=200,
- *         description="A list of all users",
- *     )
- * )
- */
+    public function RejectUserRequest($id)
+{
+    $user = User::find($id);
+
+    if ($user) {
+        $user->delete(); // حذف المستخدم
+        return response()->json([
+            'status' => 200,
+            'message' => 'User request rejected and user deleted successfully'
+        ]);
+    } else {
+        return response()->json([
+            'status' => 404,
+            'message' => 'User not found'
+        ]);
+    }
+    }
     public function SearchUserRequest($keyword){
         $users=User::where('first_name','LIKE','%'.$keyword.'%')
         ->orWhere('last_name','LIKE','%'.$keyword.'%')
@@ -102,41 +62,6 @@ class AdminController extends Controller
             'users'=>$users
         ]);
     }
-
-     /**
-     *
-     *  @OA\Post(
-     *    path="/api/admin/users",
-     *
-     *  summary="Add a new user",
-     *  tags={"Admin"},
-
-     * @OA\RequestBody(
-     *    required=true,
-     *   @OA\JsonContent(
-     *       required={"name", "email"},
-     *      @OA\Property(property="first_name", type="string"),
-     *     @OA\Property(property="last_name", type="string"),
-     *    @OA\Property(property="email", type="string"),
-     *   @OA\Property(property="password", type="string"),
-     *
-     *   )
-     * ),
-     * @OA\Response(
-     *   response=201,
-     *  description="User created successfully",
-     * @OA\JsonContent(
-     *       type="object",
-     *      @OA\Property(property="first_name", type="string"),
-     *     @OA\Property(property="last_name", type="string"),
-     *     @OA\Property(property="email", type="string"),
-     *    @OA\Property(property="password", type="string"),
-     *
-     *   )
-     * )
-     * )
-     */
-
     public function AddUserAdmin(Request $request)
     {
         $user = User::create($request->all());
@@ -150,18 +75,6 @@ class AdminController extends Controller
 
 
     }
-    /**
-     * @OA\Delete(
-     *     path="/api/admin/users/{id}",
-     *     summary="Delete a user by ID",
-     *     tags={"Admin"},
-     *
-     *     @OA\Response(
-     *         response=200,
-     *         description="User deleted successfully"
-     *     )
-     * )
-     */
     public function DeleteUserAdmin($id){
         $user=User::find($id);
         if($user){
@@ -176,6 +89,40 @@ class AdminController extends Controller
                 'message'=>'User not found'
             ]);
         }
+    }
+    public function getAllPropertiesAdmin()
+    {
+        $properties = Property::all();
+        return response()->json([
+            'status' => 200,
+            'properties' => $properties
+        ]);
+    }
+    public function DeletePropertyAdmin($id)
+    {
+        $property = Property::find($id);
+        if ($property) {
+            $property->delete();
+            return response()->json([
+                'status' => 200,
+                'message' => 'Property deleted successfully'
+            ]);
+        } else {
+            return response()->json([
+                'status' => 404,
+                'message' => 'Property not found'
+            ]);
+        }
+    }
+    public function SearchPropertyRequest($keyword)
+    {
+        $properties = Property::where('title', 'LIKE', '%' . $keyword . '%')
+            ->orWhere('description', 'LIKE', '%' . $keyword . '%')
+            ->get();
+        return response()->json([
+            'status' => 200,
+            'properties' => $properties
+        ]);
     }
 
 }

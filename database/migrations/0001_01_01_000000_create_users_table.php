@@ -17,7 +17,11 @@ return new class extends Migration
             $table->string('last_name');
             $table->string('email')->unique();
             $table->string('password');
-            
+            $table->foreignId('role_id')->constrained()->onDelete('cascade');
+            $table->string('two_factor_code')->nullable();
+            $table->timestamp('two_factor_expires_at')->nullable();
+            $table->tinyInteger('status')->default(0); // 0 = pending, 1 = active, 2 = rejected
+
             $table->rememberToken();
             $table->timestamps();
         });

@@ -17,7 +17,8 @@ return new class extends Migration
           $table->string('title');
 
           $table->integer('rating');
-            $table->foreignId('buying_id')->unique()->constrained('buying_requests')->onDelete('cascade');
+        $table->foreignId('buying_id')->unique()->constrained('buying_requests')->onDelete('cascade');
+        $table->foreignId('user_id')->constrained()->onDelete('cascade');
 
 
 

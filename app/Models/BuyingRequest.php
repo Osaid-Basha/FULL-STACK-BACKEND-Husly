@@ -27,9 +27,10 @@ class BuyingRequest extends Model
     {
         return $this->hasOne(Review::class);
     }
-    public function negotiation()
-    {
-        return $this->hasOne(Negotiation::class);
-    }
+   public function negotiation()
+{
+    return $this->belongsTo(Negotiation::class);
+}
+
 
 }
