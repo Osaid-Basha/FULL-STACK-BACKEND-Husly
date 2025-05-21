@@ -25,6 +25,7 @@ return new class extends Migration
             $table->string('shortDescreption');
             $table->integer('constructionArea');
             $table->integer('livingArea');
+            $table->boolean('available');
              $table->foreignId('property_listing_id')->constrained('listing_types')->onDelete('cascade');
             $table->foreignId('property_type_id')->constrained('property_types')->onDelete('cascade');
             $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
