@@ -1,16 +1,23 @@
 <?php
 
+
+
 namespace App\Models;
 
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
+use Laravel\Sanctum\HasApiTokens;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use Illuminate\Support\Facades\Mail;
+use App\Models\Property;
+use App\Models\Negotiation;
 
 class User extends Authenticatable
 {
-    /** @use HasFactory<\Database\Factories\UserFactory> */
-    use HasFactory, Notifiable;
+   use HasApiTokens, HasFactory, Notifiable;
+
+
 
     /**
      * The attributes that are mass assignable.
@@ -22,8 +29,11 @@ class User extends Authenticatable
         'last_name',
         'email',
         'password',
-
         'role_id',
+        'remember_token',
+        'two_factor_code',
+        'two_factor_expires_at',
+        'status',
     ];
 
     /**
@@ -35,7 +45,26 @@ class User extends Authenticatable
         'password',
         'remember_token',
     ];
+    public function sendTwoFactorCodeEmail()
+{
+    Mail::raw("Your verification code is: {$this->two_factor_code}", function ($message) {
+        $message->to($this->email)
+            ->subject('Your 2FA Code');
+    });
+}
+  public function generateTwoFactorCode()
+{
+    $this->two_factor_code = rand(100000, 999999);
+    $this->two_factor_expires_at = now()->addMinutes(5);
+    $this->save();
+}
 
+public function resetTwoFactorCode()
+{
+    $this->two_factor_code = null;
+    $this->two_factor_expires_at = null;
+    $this->save();
+}
     /**
      * Get the attributes that should be cast.
      *
@@ -44,8 +73,8 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
-            'email_verified_at' => 'datetime',
-            'password' => 'hashed',
+           // 'email_verified_at' => 'datetime',
+          //  'password' => 'hashed',
         ];
     }
     public function property()
@@ -85,14 +114,30 @@ class User extends Authenticatable
     {
         return $this->hasOne(Profile::class);
     }
-    public function role()
-    {
-        return $this->belongsToMany(Role::class, 'role_users');
-    }
-    public function negotiation()
-    {
-        return $this->belongsToMany(Negotiation::class, 'negotiation_user');
-    }
+
+     public function role()
+{
+    return $this->belongsTo(Role::class);
+}
+
+   public function negotiations()
+{
+    return $this->hasMany(Negotiation::class);
+}
+public function receivedNegotiations()
+{
+    return $this->hasManyThrough(
+        Negotiation::class,
+        Property::class,
+        'user_id',
+        'property_id',
+        'id',
+        'id'             
+    );
+}
+
+
+
 
 
 
