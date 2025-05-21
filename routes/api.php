@@ -13,6 +13,9 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\ManageReviewController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\NegotiationController;
+use App\Http\Controllers\FavoriteController;
+use App\Http\Controllers\PurchaseController;
+use App\Http\Controllers\ProfileController;
 
 
 Route::get('/user', function (Request $request) {
@@ -53,6 +56,11 @@ Route::middleware(['auth:sanctum','buyer'])->prefix('buyer')->group(function () 
     Route::get('/properties/{id}', [PropertyBuyerController::class, 'show']);
     Route::get('/agents', [BuyerController::class, 'getAllAgents']);
     Route::get('/agents/{id}', [BuyerController::class, 'getAgentById']);
+    Route::get('/purchases', [PurchaseController::class, 'getAllPurchases']);
+    Route::get('/purchases/{keyword}', [PurchaseController::class, 'searchPurchase']);
+    Route::get('/favorites', [FavoriteController::class, 'getAllFavorites']);
+    Route::post('/favorites', [FavoriteController::class, 'addFavorite']);
+    Route::delete('/favorites', [FavoriteController::class, 'deleteFavorite']);
 
 });
 
@@ -67,7 +75,11 @@ Route::middleware(['auth:sanctum','agent'])->prefix('agent')->group(function () 
 
 
 
-
+Route::middleware(['auth:sanctum'])->group(function () {
+    Route::get('/profile', [ProfileController::class, 'getProfileByUid']);
+    Route::put('/profile/update', [ProfileController::class, 'updateProfileInfo']);
+    Route::delete('/profile/remove-picture', [ProfileController::class, 'removeProfilePicture']);
+});
 
 
 

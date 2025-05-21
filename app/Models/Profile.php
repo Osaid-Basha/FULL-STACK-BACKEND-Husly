@@ -23,7 +23,8 @@ class Profile extends Model
 
 
     public function user()
-    {
-        return $this->hasOne(\App\Models\User::class);
-    }
+{
+    return $this->belongsTo(User::class, 'user_id');
+}
+
 }

@@ -110,10 +110,11 @@ public function resetTwoFactorCode()
     {
         return $this->hasMany(Message::class, 'receiver_id');
     }
-    public function profile()
-    {
-        return $this->hasOne(Profile::class);
-    }
+   public function profile()
+{
+    return $this->hasOne(Profile::class);
+}
+
 
      public function role()
 {
@@ -132,7 +133,7 @@ public function receivedNegotiations()
         'user_id',
         'property_id',
         'id',
-        'id'             
+        'id'
     );
 }
 
