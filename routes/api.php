@@ -3,18 +3,75 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\UserController;
+
 use App\Http\Controllers\PropertyBuyerController;
 use App\Http\Controllers\BuyerController;
+
+use App\Http\Controllers\PropertyController;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\AdminController;
+use App\Http\Controllers\ManageReviewController;
+use App\Http\Controllers\ReviewController;
+use App\Http\Controllers\NegotiationController;
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
-Route::get('/users', [UserController::class, 'getallUsers']);
+
+// Authentication routes
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/login', [AuthController::class, 'login']);
+Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');
+Route::post('/forgot-password', [AuthController::class, 'sendResetLink']);
+Route::post('/verify2FA', [AuthController::class, 'verify2FA']);
+Route::post('/resetPassword', [AuthController::class, 'reset']);
+
+
+//Admin routes
+Route::middleware(['auth:sanctum', 'admin'])->group(function () {
+    Route::get('/admin', [AdminController::class, 'getAllUsersAdmin']);
+    Route::put('/admin/approve/{id}', [AdminController::class, 'ApproveUserRequest']);
+    Route::put('/admin/reject/{id}', [AdminController::class, 'RejectUserRequest']);
+    Route::get('/admin/search/{keyword}', [AdminController::class, 'SearchUserRequest']);
+    Route::post('/admin', [AdminController::class, 'AddUserAdmin']);
+    Route::delete('/admin/{id}', [AdminController::class, 'DeleteUserAdmin']);
+    Route::get('/admin/properties', [AdminController::class, 'getAllPropertiesAdmin']);
+    Route::get('/admin/properties/search/{keyword}', [AdminController::class, 'SearchPropertyRequest']);
+    Route::delete('/admin/properties/{id}', [AdminController::class, 'DeletePropertyAdmin']);
+    Route::get('/reviews/search/{keyword}', [ManageReviewController::class, 'searchReviews']);
+    Route::get('/reviews/getAllReviews', [ManageReviewController::class, 'getAllReviews']);
+    Route::delete('/reviews/{id}', [ManageReviewController::class, 'deleteReview']);
+});
+// Buyer routes
+Route::middleware(['auth:sanctum','buyer'])->prefix('buyer')->group(function () {
+    Route::post('/negotiations/propose', [NegotiationController::class, 'propose']);
+    Route::post('/reviews', [ReviewController::class, 'storeReview']);
+});
+
+// Agent routes
+Route::middleware(['auth:sanctum','agent'])->prefix('agent')->group(function () {
+    Route::get('/negotiations', [NegotiationController::class, 'received']);
+    Route::put('/negotiations/{id}/accept', [NegotiationController::class, 'acceptNegotiation']);
+    Route::put('/negotiations/{id}/reject', [NegotiationController::class, 'rejectNegotiation']);
+    Route::post('/reviews/reply', [ReviewController::class, 'storeReplay']);
+    Route::get('/reviews', [ReviewController::class, 'myReviews']);
+});
+
+
+
+
+
+
+
+
+/* Route::get('/users', [UserController::class, 'getallUsers']);
 Route::get('/users/{id}', [UserController::class, 'getUserById']);
 Route::post('/users', [UserController::class, 'createUser']);
 Route::put('/users/{id}', [UserController::class, 'updateUser']);
 Route::delete('/users/{id}', [UserController::class, 'deleteUser']);
 Route::get('/users/{keyword}', [UserController::class, 'searchUsers']);
+
 Route::get('/properties', [PropertyBuyerController::class, 'getAllProperties']);
 //البحث
 Route::get('/properties/search', [PropertyBuyerController::class, 'search']);
@@ -26,3 +83,4 @@ Route::get('/properties/{id}', [PropertyBuyerController::class, 'show']);
 Route::get('/agents', [BuyerController::class, 'getAllAgents']);
 //تفاصيل الوكيل
 Route::get('/agents/{id}', [BuyerController::class, 'getAgentById']);
+

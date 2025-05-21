@@ -12,12 +12,18 @@ class Negotiation extends Model
         'type',
         'property_id',
     ];
-    public function user()
-    {
-        return $this->belongsToMany(User::class);
-    }
-    public function buyingRequest()
-    {
-        return $this->hasOne(BuyingRequest::class);
-    }
+   public function user()
+{
+    return $this->belongsTo(User::class);
+}
+
+public function property()
+{
+    return $this->belongsTo(Property::class);
+}
+   public function buyingRequest()
+{
+    return $this->hasOne(BuyingRequest::class);
+}
+
 }

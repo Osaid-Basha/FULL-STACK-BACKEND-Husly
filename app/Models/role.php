@@ -11,11 +11,12 @@ class role extends Model
 
         'id',
         'type',
-        'user_id'
+
 
     ];
-    public function users()
-    {
-        return $this->belongsToMany(User::class, 'role_users');
-    }
+  public function users()
+{
+    return $this->hasMany(User::class);
+}
+
 }
