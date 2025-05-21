@@ -3,8 +3,10 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
-class profile extends Model
+
+class Profile extends Model
 {
      protected $fillable = [
 
@@ -18,8 +20,10 @@ class profile extends Model
         'location',
         'user_id'
     ];
+
+
     public function user()
     {
-        return $this->hasOne(User::class);
+        return $this->hasOne(\App\Models\User::class);
     }
 }
