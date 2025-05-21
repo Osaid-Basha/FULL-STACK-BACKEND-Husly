@@ -9,6 +9,218 @@
         "version": "1.0.0"
     },
     "paths": {
+
+        "/api/agents": {
+            "get": {
+                "tags": [
+                    "Agents"
+                ],
+                "summary": "Get all agents",
+                "operationId": "d21dc0aa6851381581834df176574521",
+                "responses": {
+                    "200": {
+                        "description": "A list of agents",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "first_name": {
+                                                "type": "string"
+                                            },
+                                            "last_name": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/api/agents/search/{keyword}": {
+            "get": {
+                "tags": [
+                    "Agents"
+                ],
+                "summary": "Search agents by name",
+                "operationId": "a87c3b6fe831ee971c56edfcda4d08ec",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "path",
+                        "description": "Keyword to search for agents by name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Matching agents"
+                    }
+                }
+            }
+        },
+        "/api/agents/{id}": {
+            "get": {
+                "tags": [
+                    "Agents"
+                ],
+                "summary": "Get agent details by ID",
+                "operationId": "ba05aef16f308b71697c8b312b45daa6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the agent",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Agent details"
+                    },
+                    "404": {
+                        "description": "Agent not found"
+                    }
+                }
+            }
+        },
+        "/api/properties": {
+            "get": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Get all properties",
+                "operationId": "93f6f24283a4d0eefb208f5481a56a73",
+                "responses": {
+                    "200": {
+                        "description": "A list of properties"
+                    }
+                }
+            }
+        },
+        "/api/properties/search": {
+            "get": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Search for properties using filters",
+                "operationId": "04a80dc4ab88389047430a1611931979",
+                "parameters": [
+                    {
+                        "name": "location",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "Property",
+                                "Offices",
+                                "Apartments",
+                                "Houses",
+                                "Villa",
+                                "Duplex",
+                                "Penthouse",
+                                "Townhouse"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "min_price",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "max_price",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "listing_type_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Filtered list of properties"
+                    },
+                    "404": {
+                        "description": "No results found"
+                    }
+                }
+            }
+        },
+        "/api/properties/{id}": {
+            "get": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Get single property details",
+                "operationId": "1ffeff79c18b3281ff5e01339a5831e7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the property to retrieve",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Property details"
+                    },
+                    "404": {
+                        "description": "Property not found"
+                    }
+                }
+            }
+        },
+
         "/api/users": {
             "get": {
                 "tags": [
@@ -451,8 +663,14 @@
     },
     "tags": [
         {
-            "name": "Admin",
-            "description": "Admin"
+
+            "name": "Agents",
+            "description": "Agents"
+        },
+        {
+            "name": "Properties",
+            "description": "Properties"
+
         },
         {
             "name": "Authentication",

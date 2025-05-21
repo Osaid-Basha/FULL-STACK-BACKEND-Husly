@@ -113,6 +113,7 @@ public function resetTwoFactorCode()
     {
         return $this->hasOne(Profile::class);
     }
+
      public function role()
 {
     return $this->belongsTo(Role::class);
