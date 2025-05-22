@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -13,22 +12,21 @@ class PropertyTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-
-        $propertyTypes = [
-            ['type' => 'Apartment'],
-            ['type' => 'House'],
-            ['type' => 'Condo'],
-            ['type' => 'Townhouse'],
-            ['type' => 'Villa'],
-            ['type' => 'Duplex'],
-            ['type' => 'Studio'],
-            ['type' => 'Loft'],
-            ['type' => 'Penthouse'],
-            ['type' => 'Bungalow'],
+        $types = [
+            'Apartment',
+            'Villa',
+            'Land',
+            'Commercial',
+            'Office',
+            'Studio',
         ];
-        foreach ($propertyTypes as $propertyType) {
-            DB::table('property_types')->insert($propertyType);
+
+        foreach ($types as $type) {
+            DB::table('property_types')->insert([
+                'type' => $type,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
     }
 }

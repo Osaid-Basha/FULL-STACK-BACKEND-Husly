@@ -2,33 +2,30 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Validation\Rules\Unique;
+use Illuminate\Support\Str;
 
 class ProfileSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        //
-        foreach (range(1, 10) as $i) {
+        $users = DB::table('users')->get();
+
+        foreach ($users as $user) {
             DB::table('profiles')->insert([
-                'imag_path' => Str::random(10),
-                'facebook_url' => Str::random(10),
-                'instagram_url' => Str::random(10),
-                'twitter_url' => Str::random(10),
-                'linkedin_url' => Str::random(10),
-                'current_position' => Str::random(10),
-                'phone' => Str::random(10),
-                'location' => Str::random(10),
-                'user_id' => $i,
+                'imag_path' => 'https://via.placeholder.com/150',
+                'facebook_url' => 'https://facebook.com/' . Str::slug($user->first_name . $user->last_name),
+                'instagram_url' => 'https://instagram.com/' . Str::slug($user->first_name),
+                'twitter_url' => 'https://twitter.com/' . Str::slug($user->first_name),
+                'linkedin_url' => 'https://linkedin.com/in/' . Str::slug($user->first_name . '-' . $user->last_name),
+                'current_position' => 'Agent',
+                'phone' => '059' . rand(1000000, 9999999),
+                'location' => 'Nablus',
+                'user_id' => $user->id,
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
-
     }
 }

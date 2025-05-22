@@ -2,40 +2,40 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PropertySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        //
+        $listingTypeIds = DB::table('listing_types')->pluck('id');
+        $propertyTypeIds = DB::table('property_types')->pluck('id');
+        $userIds = DB::table('users')->pluck('id');
+        $purchaseIds = DB::table('purchases')->pluck('id');
 
         foreach (range(1, 10) as $i) {
-
-
             DB::table('properties')->insert([
-               'address' => Str::random(10),
-               'city' => Str::random(10),
-               'title'=> Str::random(10),
-               'landArea' => rand(1, 100),
-               'price' => rand(1, 100000),
-               'bedroom' => rand(1, 10),
-               'bathroom' => rand(1, 10),
-               'parking' => rand(1, 10),
-               'longDescreption' => Str::random(10),
-                'shortDescreption' => Str::random(10),
-                'constructionArea' => rand(1, 100),
-                'livingArea' => rand(1, 100),
-                'property_type_id' => rand(1, 10),
-                'property_listing_id' => rand(1, 2),
-                'user_id' => rand(1, 10),
-                'purchase_id' => $i,
+                'address' => 'Street ' . $i,
+                'city' => 'City ' . $i,
+                'title' => 'Property Title ' . $i,
+                'landArea' => rand(100, 1000),
+                'price' => rand(50000, 300000),
+                'bedroom' => rand(1, 5),
+                'bathroom' => rand(1, 4),
+                'parking' => rand(0, 2),
+                'longDescreption' => Str::random(50),
+                'shortDescreption' => Str::random(20),
+                'constructionArea' => rand(100, 500),
+                'livingArea' => rand(100, 400),
+                'available' => rand(0, 1),
+                'property_listing_id' => $listingTypeIds->random(),
+                'property_type_id' => $propertyTypeIds->random(),
+                'user_id' => $userIds->random(),
+                'purchase_id' => $purchaseIds->random(),
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
     }

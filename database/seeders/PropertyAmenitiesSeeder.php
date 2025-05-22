@@ -2,27 +2,28 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
 class PropertyAmenitiesSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        //
-        for ($i = 1; $i <= 10; $i++) {
-            DB::table('property_amenities')->insert([
-                'property_id' => rand(1, 10),
-                'amenity_id' => rand(1, 24),
-                'created_at' => now(),
-                'updated_at' => now(),
-            ]);
+        $propertyIds = DB::table('properties')->pluck('id');
+        $amenityIds = DB::table('amenities')->pluck('id');
+
+        foreach ($propertyIds as $property_id) {
+            // نربط كل عقار بـ 2 إلى 4 مرافق عشوائية
+            $randomAmenities = $amenityIds->random(rand(2, 4));
+
+            foreach ($randomAmenities as $amenity_id) {
+                DB::table('property_amenities')->insert([
+                    'property_id' => $property_id,
+                    'amenity_id' => $amenity_id,
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]);
+            }
         }
-
-
     }
 }

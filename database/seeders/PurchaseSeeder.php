@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class PurchaseSeeder extends Seeder
 {
@@ -13,14 +13,14 @@ class PurchaseSeeder extends Seeder
      */
     public function run(): void
     {
-        //
 
-        foreach(range(1, 10) as $i) {
+        $userIds = DB::table('users')->pluck('id');
 
+
+        foreach (range(1, 10) as $index) {
             DB::table('purchases')->insert([
-                'description' => 'Purchase ' . $i,
-
-                'user_id' => rand(1, 10),
+                'description' => 'Purchase description ' . Str::random(10),
+                'user_id' => $userIds->random(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

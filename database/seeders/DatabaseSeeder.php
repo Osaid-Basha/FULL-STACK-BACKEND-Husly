@@ -8,43 +8,56 @@ use App\Models\User;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
+{public function run(): void
 {
-    /**
-     * Seed the application's database.
-     */
-    public function run(): void
-    {
-        // User::factory(10)->create();
-
-       /*  User::factory()->create([
-            'name' => 'Test User',
-            'email' => 'test@example.com',
-        ]); */
-        $this->call([
-    UserSeeder::class,
-    ProfileSeeder::class,
-    NotificationSeeder::class,
-    NotificationUserSeeder::class,
-    RoleSeeder::class,
-    RoleUsersSeeder::class,
-    MessageSeeder::class,
-    PropertyTypeSeeder::class,
-    ListingTypeSeeder::class,
-    PurchaseSeeder::class,
-    PropertySeeder::class,
-    PropertyImageSeeder::class,
-    AmenitySeeder::class,
-    PropertyAmenitiesSeeder::class,
-    FavoritesSeeder::class,
-    NegotiationSeeder::class,
-    NegotiationUserSeeder::class,
-    BuyingRequestSeeder::class,
-    ReviewSeeder::class,
-    ReplaySeeder::class,
+    $this->call([
+        // الجداول الأساسية المستقلة
+        RoleSeeder::class,
+        AmenitySeeder::class,
+        PropertyTypeSeeder::class,
+        ListingTypeSeeder::class,
 
 
+        UserSeeder::class,
 
 
-]);
-    }
+        PurchaseSeeder::class,
+
+
+        PropertySeeder::class,
+
+
+        PropertyImageSeeder::class,
+
+
+        PropertyAmenitiesSeeder::class,
+
+
+        BuyingRequestSeeder::class,
+
+        ReviewSeeder::class,
+
+
+        ReplaySeeder::class,
+
+
+        NotificationSeeder::class,
+
+
+        NotificationUserSeeder::class,
+
+
+        MessageSeeder::class,
+
+
+        NegotiationSeeder::class,
+
+
+        FavoritesSeeder::class,
+
+
+        ProfileSeeder::class,
+    ]);
+}
+
 }

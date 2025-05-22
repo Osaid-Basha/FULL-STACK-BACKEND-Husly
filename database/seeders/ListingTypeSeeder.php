@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -13,15 +12,18 @@ class ListingTypeSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-        $listingTypes = [
-            ['type' => 'sale'],
-            ['type' => 'rent'],
-
+        $types = [
+            'For Sale',
+            'For Rent',
+            'Wanted to Buy',
         ];
-        foreach ($listingTypes as $listingType) {
-            DB::table('listing_types')->insert($listingType);
-            
+
+        foreach ($types as $type) {
+            DB::table('listing_types')->insert([
+                'type' => $type,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]);
         }
     }
 }

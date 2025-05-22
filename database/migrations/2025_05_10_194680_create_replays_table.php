@@ -15,7 +15,8 @@ return new class extends Migration
             $table->id();
 
             $table->string('message_content');
-           $table->foreignId('user_id')->unique()->constrained('users')->onDelete('cascade');
+           $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+
             $table->foreignId('review_id')->unique()->constrained('reviews')->onDelete('cascade');
 
             $table->timestamps();

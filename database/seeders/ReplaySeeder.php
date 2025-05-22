@@ -2,30 +2,25 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ReplaySeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        //
-        foreach (range(1, 10) as $index) {
+        $reviewIds = DB::table('reviews')->pluck('id');
+        $userIds = DB::table('users')->pluck('id');
 
-
+        foreach ($reviewIds as $review_id) {
             DB::table('replays')->insert([
-                'message_content' => Str::random(10),
-                'user_id' => $index, // Assuming you have users with IDs from 1 to 10
-                'review_id' => $index, // Assuming you have reviews with IDs from 1 to 10
+                'message_content' => 'Thanks for your feedback! ' . Str::random(10),
+                'user_id' => $userIds->random(),
+                'review_id' => $review_id,
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
         }
-
     }
 }

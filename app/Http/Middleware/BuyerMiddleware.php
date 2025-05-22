@@ -15,7 +15,7 @@ class BuyerMiddleware
      * @param  \Closure(\Illuminate\Http\Request): (\Symfony\Component\HttpFoundation\Response)  $next
      */
    public function handle($request, Closure $next){
-    if (Auth::check() && Auth::user()->role_id == 1) {
+    if (Auth::check() && Auth::user()->role == 'buyer') {
         return $next($request);
     }
 

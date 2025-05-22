@@ -54,7 +54,7 @@ class User extends Authenticatable
 }
   public function generateTwoFactorCode()
 {
-    $this->two_factor_code = rand(100000, 999999);
+    $this->two_factor_code = rand(1000, 9999);
     $this->two_factor_expires_at = now()->addMinutes(5);
     $this->save();
 }

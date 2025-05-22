@@ -2,27 +2,26 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Str;
 
 class ReviewSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
     public function run(): void
     {
-        //
-        foreach (range(1, 10) as $index) {
+        $buyingIds = DB::table('buying_requests')->pluck('id');
+        $userIds = DB::table('users')->pluck('id');
+
+        foreach ($buyingIds as $buying_id) {
             DB::table('reviews')->insert([
-                'content' => 'This is a review content for review ' . $index,
-                'title' => 'Review Title ' . $index,
+                'content' => Str::random(50),
+                'title' => 'Review Title ' . rand(1, 100),
                 'rating' => rand(1, 5),
-                'buying_id' => $index, // Assuming you have buying requests with IDs from 1 to 10
+                'buying_id' => $buying_id,
+                'user_id' => $userIds->random(),
                 'created_at' => now(),
                 'updated_at' => now(),
-                // Assuming you have buying requests with IDs from 1 to 10
             ]);
         }
     }

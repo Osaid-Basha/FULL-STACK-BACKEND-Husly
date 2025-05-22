@@ -2,12 +2,9 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Hash;
-use Number;
 
 class UserSeeder extends Seeder
 {
@@ -16,19 +13,43 @@ class UserSeeder extends Seeder
      */
     public function run(): void
     {
-        //
-        foreach (range(1, 10) as $i) {
-            DB::table('users')->insert([
-                'first_name' => Str::random(10),
-                'last_name' => Str::random(10),
-                'email' => Str::random(10).'@gmail.com',
-                'password' => Hash::make('password'),
-                'remember_token' => Str::random(10),
-            ]);
-        }
-
-
-
-
+        DB::table('users')->insert([
+            [
+                'first_name' => 'Mohammad',
+                'last_name' => 'Admin',
+                'email' => 'admin@example.com',
+                'password' => Hash::make('password123'),
+                'role_id' => 1,
+                'status' => 1,
+                'two_factor_code' => null,
+                'two_factor_expires_at' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'first_name' => 'Ahmad',
+                'last_name' => 'Agent',
+                'email' => 'agent@example.com',
+                'password' => Hash::make('password123'),
+                'role_id' => 2,
+                'status' => 1,
+                'two_factor_code' => null,
+                'two_factor_expires_at' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+            [
+                'first_name' => 'Sara',
+                'last_name' => 'Buyer',
+                'email' => 'buyer@example.com',
+                'password' => Hash::make('password123'),
+                'role_id' => 3,
+                'status' => 0,
+                'two_factor_code' => null,
+                'two_factor_expires_at' => null,
+                'created_at' => now(),
+                'updated_at' => now(),
+            ],
+        ]);
     }
 }
