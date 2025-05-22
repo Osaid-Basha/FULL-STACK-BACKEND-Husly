@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class property extends Model
+class Property extends Model
 {
     protected $fillable = [
         'address',
@@ -38,7 +38,7 @@ class property extends Model
     }
     public function images()
     {
-        return $this->hasMany(property_image::class);
+        return $this->hasMany(propertyImage::class);
     }
 
     public function purchase()
@@ -56,7 +56,7 @@ class property extends Model
     }
     public function amenity()
     {
-        return $this->belongsToMany(amenity::class, 'property_amenity');
+        return $this->belongsToMany(amenity::class, 'property_amenities');
     }
     public function negotiation()
     {

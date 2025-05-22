@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class property_image extends Model
+class PropertyImage extends Model
 {
     protected $fillable = [
         'imageUrl',
@@ -12,7 +12,7 @@ class property_image extends Model
     ];
     public function property()
     {
-        return $this->belongsTo(property::class);
+        return $this->belongsTo(Property::class);
     }
 
 }

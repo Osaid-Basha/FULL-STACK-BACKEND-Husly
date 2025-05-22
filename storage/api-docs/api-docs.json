@@ -9,16 +9,461 @@
         "version": "1.0.0"
     },
     "paths": {
+        "/api/messages": {
+            "get": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Get all messages",
+                "operationId": "9d5effa2cb648df85be0ea9741ffb457",
+                "responses": {
+                    "200": {
+                        "description": "List of all messages"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Messages"
+                ],
+                "summary": "Send a new message",
+                "operationId": "db79bb7bcadfdb708e9f6c38ac928f4a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "sender_id",
+                                    "receiver_id",
+                                    "content"
+                                ],
+                                "properties": {
+                                    "sender_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "receiver_id": {
+                                        "type": "integer",
+                                        "example": 2
+                                    },
+                                    "content": {
+                                        "type": "string",
+                                        "example": "Hello, how are you?"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Message sent successfully"
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
         "/api/properties": {
             "get": {
                 "tags": [
                     "Properties"
                 ],
-                "summary": "Get all properties",
-                "operationId": "93f6f24283a4d0eefb208f5481a56a73",
+                "summary": "Get all properties, with optional search by name",
+                "operationId": "ae50890d9da51a5cfe01cd2151d4077a",
+                "parameters": [
+                    {
+                        "name": "search",
+                        "in": "query",
+                        "description": "Search term for property name (e.g., 'Villa')",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
                     "200": {
-                        "description": "A list of properties"
+                        "description": "List of all properties or matching properties"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Add a new property",
+                "operationId": "debc241247e30f0490b9e236483217d0",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "name",
+                                    "description",
+                                    "price",
+                                    "location"
+                                ],
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Villa Sunset"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "A luxurious villa with a sea view."
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "example": 350000
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": "123 Beach St, Miami, FL"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Property created successfully"
+                    },
+                    "422": {
+                        "description": "Invalid data"
+                    }
+                }
+            }
+        },
+        "/api/properties/{id}": {
+            "get": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Get a specific property",
+                "operationId": "1ffeff79c18b3281ff5e01339a5831e7",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Property ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Property details"
+                    },
+                    "404": {
+                        "description": "Property not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Update a property",
+                "operationId": "d5f20f7ec2d5b865985ee2a307481311",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Property ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "name": {
+                                        "type": "string",
+                                        "example": "Villa Sunset Updated"
+                                    },
+                                    "description": {
+                                        "type": "string",
+                                        "example": "An updated luxurious villa."
+                                    },
+                                    "price": {
+                                        "type": "number",
+                                        "example": 400000
+                                    },
+                                    "location": {
+                                        "type": "string",
+                                        "example": "456 Palm St, Miami, FL"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Property updated successfully"
+                    },
+                    "404": {
+                        "description": "Property not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Delete a property",
+                "operationId": "a1f3cd4975f784df9ae3f810e13a2066",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Property ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Property deleted successfully"
+                    },
+                    "404": {
+                        "description": "Property not found"
+                    }
+                }
+            }
+        },
+        "/api/properties/{propertyId}/amenities": {
+            "get": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Get a list of amenities for a specific property",
+                "operationId": "ba9ee5a35dd85f2b5f1121655d04efcb",
+                "parameters": [
+                    {
+                        "name": "propertyId",
+                        "in": "path",
+                        "description": "ID of the property",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "List of amenities",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "example": "garden"
+                                    }
+                                }
+                            }
+                        }
+                    },
+                    "404": {
+                        "description": "Property not found"
+                    }
+                }
+            }
+        },
+        "/api/property-images": {
+            "get": {
+                "tags": [
+                    "Property Images"
+                ],
+                "summary": "Get all property images",
+                "operationId": "ac5ba1fa20e8ab3033cca71a3ab521b7",
+                "responses": {
+                    "200": {
+                        "description": "List of all property images"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "Property Images"
+                ],
+                "summary": "Upload a new property image",
+                "operationId": "3ff6cdaf8395d14d451f36e29dda0c15",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "property_id",
+                                    "image_url"
+                                ],
+                                "properties": {
+                                    "property_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "image_url": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://example.com/image.jpg"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Image uploaded successfully",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "properties": {
+                                        "id": {
+                                            "type": "integer",
+                                            "example": 10
+                                        },
+                                        "property_id": {
+                                            "type": "integer",
+                                            "example": 1
+                                        },
+                                        "image_url": {
+                                            "type": "string",
+                                            "example": "https://example.com/image.jpg"
+                                        },
+                                        "created_at": {
+                                            "type": "string",
+                                            "example": "2025-05-21T12:34:56Z"
+                                        },
+                                        "updated_at": {
+                                            "type": "string",
+                                            "example": "2025-05-21T12:34:56Z"
+                                        }
+                                    },
+                                    "type": "object"
+                                }
+                            }
+                        }
+                    },
+                    "422": {
+                        "description": "Validation error"
+                    }
+                }
+            }
+        },
+        "/api/property-images/{id}": {
+            "get": {
+                "tags": [
+                    "Property Images"
+                ],
+                "summary": "Get a specific property image",
+                "operationId": "e33d274cb942c1af86deb09b92b52ba0",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Property Image ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Image details"
+                    },
+                    "404": {
+                        "description": "Image not found"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "Property Images"
+                ],
+                "summary": "Update a property image",
+                "operationId": "8af00860661c40c7288eaca816c51a2b",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Property Image ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "properties": {
+                                    "image_url": {
+                                        "type": "string",
+                                        "format": "url",
+                                        "example": "https://example.com/new-image.jpg"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Image updated successfully"
+                    },
+                    "404": {
+                        "description": "Image not found"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "Property Images"
+                ],
+                "summary": "Delete a property image",
+                "operationId": "2a2c8e6337b12ebcab084ef816e8cb13",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Property Image ID",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Image deleted successfully"
+                    },
+                    "404": {
+                        "description": "Image not found"
                     }
                 }
             }
@@ -267,8 +712,16 @@
     },
     "tags": [
         {
+            "name": "Messages",
+            "description": "Messages"
+        },
+        {
             "name": "Properties",
             "description": "Properties"
+        },
+        {
+            "name": "Property Images",
+            "description": "Property Images"
         },
         {
             "name": "Users",

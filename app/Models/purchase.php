@@ -9,7 +9,7 @@ class purchase extends Model
     protected $fillable = ['description','user_id'];
     public function property()
     {
-        return $this->hasMany(property::class);
+        return $this->hasMany(Property::class);
     }
     public function user()
     {
