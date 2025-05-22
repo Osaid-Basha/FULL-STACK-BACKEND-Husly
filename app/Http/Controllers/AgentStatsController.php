@@ -35,27 +35,24 @@ class AgentStatsController extends Controller
      */
     public function getPropertyStats(Request $request): JsonResponse
     {
-        // 1. الحصول على معرف المستخدم المتصل
         $userId = Auth::id();
 
         if (!$userId) {
             return response()->json(['error' => 'Unauthenticated.'], 401);
         }
 
-        // 2. جلب المستخدم مع التحقق منه
+
         $user = User::find($userId);
 
         if (!$user) {
             return response()->json(['error' => 'User not found.'], 404);
         }
 
-        // 3. التأكد من أن المستخدم هو نفسه (في حال تم تمرير ID مختلف)
         if ($request->route('id') && $user->id != $request->route('id')) {
             return response()->json(['error' => 'Unauthorized access.'], 403);
         }
 
 
-        // 5. حساب إحصائيات العقارات
         $total = DB::table('properties')->where('user_id', $user->id)->count();
         $sold = DB::table('properties')
             ->where('user_id', $user->id)
