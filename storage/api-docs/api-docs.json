@@ -9,60 +9,94 @@
         "version": "1.0.0"
     },
     "paths": {
-        "/api/messages": {
+
+        "/api/agents": {
             "get": {
                 "tags": [
-                    "Messages"
+                    "Agents"
                 ],
-                "summary": "Get all messages",
-                "operationId": "9d5effa2cb648df85be0ea9741ffb457",
+                "summary": "Get all agents",
+                "operationId": "d21dc0aa6851381581834df176574521",
                 "responses": {
                     "200": {
-                        "description": "List of all messages"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Messages"
-                ],
-                "summary": "Send a new message",
-                "operationId": "db79bb7bcadfdb708e9f6c38ac928f4a",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "sender_id",
-                                    "receiver_id",
-                                    "content"
-                                ],
-                                "properties": {
-                                    "sender_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "receiver_id": {
-                                        "type": "integer",
-                                        "example": 2
-                                    },
-                                    "content": {
-                                        "type": "string",
-                                        "example": "Hello, how are you?"
+                        "description": "A list of agents",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "properties": {
+                                            "id": {
+                                                "type": "integer"
+                                            },
+                                            "first_name": {
+                                                "type": "string"
+                                            },
+                                            "last_name": {
+                                                "type": "string"
+                                            },
+                                            "email": {
+                                                "type": "string"
+                                            }
+                                        },
+                                        "type": "object"
                                     }
-                                },
-                                "type": "object"
+                                }
                             }
                         }
                     }
-                },
+                }
+            }
+        },
+        "/api/agents/search/{keyword}": {
+            "get": {
+                "tags": [
+                    "Agents"
+                ],
+                "summary": "Search agents by name",
+                "operationId": "a87c3b6fe831ee971c56edfcda4d08ec",
+                "parameters": [
+                    {
+                        "name": "keyword",
+                        "in": "path",
+                        "description": "Keyword to search for agents by name",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
                 "responses": {
-                    "201": {
-                        "description": "Message sent successfully"
+                    "200": {
+                        "description": "Matching agents"
+                    }
+                }
+            }
+        },
+        "/api/agents/{id}": {
+            "get": {
+                "tags": [
+                    "Agents"
+                ],
+                "summary": "Get agent details by ID",
+                "operationId": "ba05aef16f308b71697c8b312b45daa6",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "ID of the agent",
+                        "required": true,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Agent details"
                     },
-                    "422": {
-                        "description": "Validation error"
+                    "404": {
+                        "description": "Agent not found"
                     }
                 }
             }
@@ -72,13 +106,76 @@
                 "tags": [
                     "Properties"
                 ],
-                "summary": "Get all properties, with optional search by name",
-                "operationId": "ae50890d9da51a5cfe01cd2151d4077a",
+                "summary": "Get all properties",
+                "operationId": "93f6f24283a4d0eefb208f5481a56a73",
+                "responses": {
+                    "200": {
+                        "description": "A list of properties"
+                    }
+                }
+            }
+        },
+        "/api/properties/search": {
+            "get": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Search for properties using filters",
+                "operationId": "04a80dc4ab88389047430a1611931979",
                 "parameters": [
                     {
-                        "name": "search",
+                        "name": "location",
                         "in": "query",
-                        "description": "Search term for property name (e.g., 'Villa')",
+                        "required": false,
+                        "schema": {
+                            "type": "string"
+                        }
+                    },
+                    {
+                        "name": "type",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "string",
+                            "enum": [
+                                "Property",
+                                "Offices",
+                                "Apartments",
+                                "Houses",
+                                "Villa",
+                                "Duplex",
+                                "Penthouse",
+                                "Townhouse"
+                            ]
+                        }
+                    },
+                    {
+                        "name": "min_price",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "max_price",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "number"
+                        }
+                    },
+                    {
+                        "name": "listing_type_id",
+                        "in": "query",
+                        "required": false,
+                        "schema": {
+                            "type": "integer"
+                        }
+                    },
+                    {
+                        "name": "keyword",
+                        "in": "query",
                         "required": false,
                         "schema": {
                             "type": "string"
@@ -87,56 +184,10 @@
                 ],
                 "responses": {
                     "200": {
-                        "description": "List of all properties or matching properties"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Properties"
-                ],
-                "summary": "Add a new property",
-                "operationId": "debc241247e30f0490b9e236483217d0",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "name",
-                                    "description",
-                                    "price",
-                                    "location"
-                                ],
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "Villa Sunset"
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "example": "A luxurious villa with a sea view."
-                                    },
-                                    "price": {
-                                        "type": "number",
-                                        "example": 350000
-                                    },
-                                    "location": {
-                                        "type": "string",
-                                        "example": "123 Beach St, Miami, FL"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Property created successfully"
+                        "description": "Filtered list of properties"
                     },
-                    "422": {
-                        "description": "Invalid data"
+                    "404": {
+                        "description": "No results found"
                     }
                 }
             }
@@ -146,13 +197,13 @@
                 "tags": [
                     "Properties"
                 ],
-                "summary": "Get a specific property",
+                "summary": "Get single property details",
                 "operationId": "1ffeff79c18b3281ff5e01339a5831e7",
                 "parameters": [
                     {
                         "name": "id",
                         "in": "path",
-                        "description": "Property ID",
+                        "description": "ID of the property to retrieve",
                         "required": true,
                         "schema": {
                             "type": "integer"
@@ -167,338 +218,49 @@
                         "description": "Property not found"
                     }
                 }
-            },
-            "put": {
-                "tags": [
-                    "Properties"
-                ],
-                "summary": "Update a property",
-                "operationId": "d5f20f7ec2d5b865985ee2a307481311",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Property ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "name": {
-                                        "type": "string",
-                                        "example": "Villa Sunset Updated"
-                                    },
-                                    "description": {
-                                        "type": "string",
-                                        "example": "An updated luxurious villa."
-                                    },
-                                    "price": {
-                                        "type": "number",
-                                        "example": 400000
-                                    },
-                                    "location": {
-                                        "type": "string",
-                                        "example": "456 Palm St, Miami, FL"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Property updated successfully"
-                    },
-                    "404": {
-                        "description": "Property not found"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Properties"
-                ],
-                "summary": "Delete a property",
-                "operationId": "a1f3cd4975f784df9ae3f810e13a2066",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Property ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Property deleted successfully"
-                    },
-                    "404": {
-                        "description": "Property not found"
-                    }
-                }
             }
         },
-        "/api/properties/{propertyId}/amenities": {
-            "get": {
-                "tags": [
-                    "Properties"
-                ],
-                "summary": "Get a list of amenities for a specific property",
-                "operationId": "ba9ee5a35dd85f2b5f1121655d04efcb",
-                "parameters": [
-                    {
-                        "name": "propertyId",
-                        "in": "path",
-                        "description": "ID of the property",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "List of amenities",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "string",
-                                        "example": "garden"
-                                    }
-                                }
-                            }
-                        }
-                    },
-                    "404": {
-                        "description": "Property not found"
-                    }
-                }
-            }
-        },
-        "/api/property-images": {
-            "get": {
-                "tags": [
-                    "Property Images"
-                ],
-                "summary": "Get all property images",
-                "operationId": "ac5ba1fa20e8ab3033cca71a3ab521b7",
-                "responses": {
-                    "200": {
-                        "description": "List of all property images"
-                    }
-                }
-            },
-            "post": {
-                "tags": [
-                    "Property Images"
-                ],
-                "summary": "Upload a new property image",
-                "operationId": "3ff6cdaf8395d14d451f36e29dda0c15",
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "required": [
-                                    "property_id",
-                                    "image_url"
-                                ],
-                                "properties": {
-                                    "property_id": {
-                                        "type": "integer",
-                                        "example": 1
-                                    },
-                                    "image_url": {
-                                        "type": "string",
-                                        "format": "url",
-                                        "example": "https://example.com/image.jpg"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "201": {
-                        "description": "Image uploaded successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer",
-                                            "example": 10
-                                        },
-                                        "property_id": {
-                                            "type": "integer",
-                                            "example": 1
-                                        },
-                                        "image_url": {
-                                            "type": "string",
-                                            "example": "https://example.com/image.jpg"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "example": "2025-05-21T12:34:56Z"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "example": "2025-05-21T12:34:56Z"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    },
-                    "422": {
-                        "description": "Validation error"
-                    }
-                }
-            }
-        },
-        "/api/property-images/{id}": {
-            "get": {
-                "tags": [
-                    "Property Images"
-                ],
-                "summary": "Get a specific property image",
-                "operationId": "e33d274cb942c1af86deb09b92b52ba0",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Property Image ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Image details"
-                    },
-                    "404": {
-                        "description": "Image not found"
-                    }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Property Images"
-                ],
-                "summary": "Update a property image",
-                "operationId": "8af00860661c40c7288eaca816c51a2b",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Property Image ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "requestBody": {
-                    "required": true,
-                    "content": {
-                        "application/json": {
-                            "schema": {
-                                "properties": {
-                                    "image_url": {
-                                        "type": "string",
-                                        "format": "url",
-                                        "example": "https://example.com/new-image.jpg"
-                                    }
-                                },
-                                "type": "object"
-                            }
-                        }
-                    }
-                },
-                "responses": {
-                    "200": {
-                        "description": "Image updated successfully"
-                    },
-                    "404": {
-                        "description": "Image not found"
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Property Images"
-                ],
-                "summary": "Delete a property image",
-                "operationId": "2a2c8e6337b12ebcab084ef816e8cb13",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "Property Image ID",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "Image deleted successfully"
-                    },
-                    "404": {
-                        "description": "Image not found"
-                    }
-                }
-            }
-        },
+
         "/api/users": {
             "get": {
                 "tags": [
-                    "Users"
+                    "Admin"
                 ],
-                "summary": "Get all users",
-                "operationId": "71188520e793e1d6782f3a4482c34d5e",
+                "summary": "Get all users for admin",
+                "operationId": "9ae473e4762fd14440b777120aa3f205",
                 "responses": {
                     "200": {
-                        "description": "A list of users"
+                        "description": "A list of all users"
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             },
             "post": {
                 "tags": [
-                    "Users"
+                    "Admin"
                 ],
-                "summary": "Create a new user",
-                "description": "* @OA\\Post(\n   path=\"/api/users\",\n\n summary=\"Create a new user\",\ntags={\"Users\"},",
-                "operationId": "15cb7ac620df8a65f737624b240b8976",
+                "summary": "Add a new user",
+                "operationId": "6553524bf96358d6d0af5ecba02714d5",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "name",
-                                    "email"
+                                    "first_name",
+                                    "last_name",
+                                    "email",
+                                    "password"
                                 ],
                                 "properties": {
-                                    "name": {
+                                    "first_name": {
+                                        "type": "string"
+                                    },
+                                    "last_name": {
                                         "type": "string"
                                     },
                                     "email": {
@@ -520,22 +282,17 @@
                             "application/json": {
                                 "schema": {
                                     "properties": {
-                                        "id": {
-                                            "type": "integer"
+                                        "first_name": {
+                                            "type": "string"
                                         },
-                                        "name": {
+                                        "last_name": {
                                             "type": "string"
                                         },
                                         "email": {
                                             "type": "string"
                                         },
-                                        "created_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "format": "date-time"
+                                        "password": {
+                                            "type": "string"
                                         }
                                     },
                                     "type": "object"
@@ -543,95 +300,243 @@
                             }
                         }
                     }
-                }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/users/approve/{id}": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Approve a user request",
+                "operationId": "bbaa9432bad0246564492e3ee41961bd",
+                "responses": {
+                    "200": {
+                        "description": "User approved successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/users/reject/{id}": {
+            "put": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Reject a user request",
+                "operationId": "a4dd32c400c32f5fc7ec0160a3ad5bf3",
+                "responses": {
+                    "200": {
+                        "description": "User reject successfully"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/users/search/{keyword}": {
+            "get": {
+                "tags": [
+                    "Admin"
+                ],
+                "summary": "Search users by keyword",
+                "operationId": "92885853bcf78aaade3681d5de2e92ad",
+                "responses": {
+                    "200": {
+                        "description": "A list of all users"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
             }
         },
         "/api/users/{id}": {
-            "get": {
+            "delete": {
                 "tags": [
-                    "Users"
+                    "Admin"
                 ],
-                "summary": "Get a user by ID",
-                "operationId": "8242536d482e67ca1a4607f836f473fe",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the user to get",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
+                "summary": "Delete a user by ID",
+                "operationId": "91c9bfbf1bbf4d24b50a5b3fe5945b37",
                 "responses": {
                     "200": {
-                        "description": "User details",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer"
-                                        },
-                                        "name": {
-                                            "type": "string"
-                                        },
-                                        "email": {
-                                            "type": "string"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
+                        "description": "User deleted successfully"
                     }
-                }
-            },
-            "put": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Update a user by ID",
-                "description": "* @OA\\Put(\n  path=\"/api/users/{id}\",\n summary=\"Update a user by ID\",\ntags={\"Users\"},",
-                "operationId": "1c2c1eb9faac63c5a992039dfc44acec",
-                "parameters": [
+                },
+                "security": [
                     {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the user to update",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
+                        "sanctum": []
                     }
+                ]
+            }
+        },
+        "/api/register": {
+            "post": {
+                "tags": [
+                    "Authentication"
                 ],
+                "summary": "Register a new user",
+                "operationId": "8a56853624e025573120a09a4c75d468",
                 "requestBody": {
                     "required": true,
                     "content": {
                         "application/json": {
                             "schema": {
                                 "required": [
-                                    "name",
+                                    "first_name",
+                                    "last_name",
+                                    "email",
+                                    "password",
+                                    "confirm_password",
+                                    "role_id"
+                                ],
+                                "properties": {
+                                    "first_name": {
+                                        "type": "string",
+                                        "example": "Mohammad"
+                                    },
+                                    "last_name": {
+                                        "type": "string",
+                                        "example": "Salem"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "mohammad@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "12345678"
+                                    },
+                                    "confirm_password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "12345678"
+                                    },
+                                    "role_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "User registered successfully"
+                    }
+                }
+            }
+        },
+        "/api/login": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Login user",
+                "operationId": "a3b306d14572d1f4bd6c064b3233e7b8",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "email",
+                                    "password",
+                                    "role"
+                                ],
+                                "properties": {
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "mohammad@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "example": "12345678"
+                                    },
+                                    "role": {
+                                        "type": "string",
+                                        "example": "admin"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "201": {
+                        "description": "Login successfully"
+                    },
+                    "403": {
+                        "description": "Role mismatch"
+                    },
+                    "401": {
+                        "description": "Incorrect email or password"
+                    }
+                }
+            }
+        },
+        "/api/logout": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Logout the authenticated user",
+                "operationId": "fe8f3429cd6979b3b4517e186505f9f9",
+                "responses": {
+                    "200": {
+                        "description": "Logged out successfully"
+                    },
+                    "401": {
+                        "description": "Unauthenticated"
+                    }
+                },
+                "security": [
+                    {
+                        "sanctum": []
+                    }
+                ]
+            }
+        },
+        "/api/forgot-password": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Send password reset link to email",
+                "operationId": "b93bd61884f12f561e37f8459dd3a625",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
                                     "email"
                                 ],
                                 "properties": {
-                                    "name": {
-                                        "type": "string"
-                                    },
                                     "email": {
-                                        "type": "string"
-                                    },
-                                    "password": {
-                                        "type": "string"
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "albashaosayd@example.com"
                                     }
                                 },
                                 "type": "object"
@@ -641,70 +546,116 @@
                 },
                 "responses": {
                     "200": {
-                        "description": "User updated successfully",
-                        "content": {
-                            "application/json": {
-                                "schema": {
-                                    "properties": {
-                                        "id": {
-                                            "type": "integer"
-                                        },
-                                        "name": {
-                                            "type": "string"
-                                        },
-                                        "email": {
-                                            "type": "string"
-                                        },
-                                        "created_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        },
-                                        "updated_at": {
-                                            "type": "string",
-                                            "format": "date-time"
-                                        }
-                                    },
-                                    "type": "object"
-                                }
-                            }
-                        }
-                    }
-                }
-            },
-            "delete": {
-                "tags": [
-                    "Users"
-                ],
-                "summary": "Delete a user by ID",
-                "operationId": "a0ce91d753f85c9a3caee8c136d70e4c",
-                "parameters": [
-                    {
-                        "name": "id",
-                        "in": "path",
-                        "description": "ID of the user to delete",
-                        "required": true,
-                        "schema": {
-                            "type": "integer"
-                        }
-                    }
-                ],
-                "responses": {
-                    "200": {
-                        "description": "User deleted successfully"
+                        "description": "Reset link sent to your email."
+                    },
+                    "500": {
+                        "description": "Unable to send reset link."
                     }
                 }
             }
         },
-        "api/users/{keyword}": {
-            "get": {
+        "/api/verify-2fa": {
+            "post": {
                 "tags": [
-                    "Users"
+                    "Authentication"
                 ],
-                "summary": "Get all users",
-                "operationId": "9cbbc1cad2b2cd889c8607517ca545c5",
+                "summary": "Verify 2FA code",
+                "operationId": "ef04a8108d42942a7bb9fb8f73a9e2ff",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "user_id",
+                                    "code"
+                                ],
+                                "properties": {
+                                    "user_id": {
+                                        "type": "integer",
+                                        "example": 1
+                                    },
+                                    "code": {
+                                        "type": "string",
+                                        "example": "123456"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
                 "responses": {
                     "200": {
-                        "description": "A list of users"
+                        "description": "2FA Verified Successfully"
+                    }
+                }
+            }
+        },
+        "/api/resetPassword": {
+            "post": {
+                "tags": [
+                    "Authentication"
+                ],
+                "summary": "Reset user password using token",
+                "operationId": "66d0a5c892b4deff44faa43cf7c4e86a",
+                "requestBody": {
+                    "required": true,
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "required": [
+                                    "token",
+                                    "email",
+                                    "password",
+                                    "password_confirmation"
+                                ],
+                                "properties": {
+                                    "token": {
+                                        "type": "string",
+                                        "example": "abcdef123456"
+                                    },
+                                    "email": {
+                                        "type": "string",
+                                        "format": "email",
+                                        "example": "osayd@example.com"
+                                    },
+                                    "password": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newpassword123"
+                                    },
+                                    "password_confirmation": {
+                                        "type": "string",
+                                        "format": "password",
+                                        "example": "newpassword123"
+                                    }
+                                },
+                                "type": "object"
+                            }
+                        }
+                    }
+                },
+                "responses": {
+                    "200": {
+                        "description": "Password has been reset"
+                    },
+                    "500": {
+                        "description": "Reset failed"
+                    }
+                }
+            }
+        },
+        "/api/properties": {
+            "get": {
+                "tags": [
+                    "Properties"
+                ],
+                "summary": "Get all properties",
+                "operationId": "93f6f24283a4d0eefb208f5481a56a73",
+                "responses": {
+                    "200": {
+                        "description": "A list of properties"
                     }
                 }
             }
@@ -712,20 +663,22 @@
     },
     "tags": [
         {
-            "name": "Messages",
-            "description": "Messages"
+
+            "name": "Agents",
+            "description": "Agents"
         },
         {
             "name": "Properties",
             "description": "Properties"
+
         },
         {
-            "name": "Property Images",
-            "description": "Property Images"
+            "name": "Authentication",
+            "description": "Authentication"
         },
         {
-            "name": "Users",
-            "description": "Users"
+            "name": "Properties",
+            "description": "Properties"
         }
     ]
 }

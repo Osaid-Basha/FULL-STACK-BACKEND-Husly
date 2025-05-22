@@ -15,7 +15,9 @@ return new class extends Migration
             $table->id();
             $table->boolean('status')->nullable();
             $table->string('type')->nullable();
-            $table->foreignId('negotiation_id')->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->foreignId('property_id')->constrained()->onDelete('cascade');
+
             $table->timestamps();
         });
     }

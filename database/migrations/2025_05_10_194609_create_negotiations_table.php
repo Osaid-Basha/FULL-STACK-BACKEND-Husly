@@ -13,9 +13,10 @@ return new class extends Migration
     {
         Schema::create('negotiations', function (Blueprint $table) {
             $table->id();
-            $table->boolean('status')->nullable();
-            $table->integer('proposed_price')->nullable();
-            $table->foreignId('property_id')->unique()->constrained()->onDelete('cascade');
+            $table->foreignId('user_id')->constrained()->onDelete('cascade');
+            $table->string('status')->default('pending');
+            $table->decimal('proposed_price', 10, 2)->nullable();
+            $table->foreignId('property_id')->constrained()->onDelete('cascade');
 
             $table->timestamps();
         });

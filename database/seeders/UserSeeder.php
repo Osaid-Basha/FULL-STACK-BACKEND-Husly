@@ -26,7 +26,7 @@ class UserSeeder extends Seeder
                 'remember_token' => Str::random(10),
             ]);
         }
-        
+
 
 
 
