@@ -17,6 +17,8 @@ use App\Http\Controllers\FavoriteController;
 use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AgentStatsController;
+use App\Http\Controllers\MessageController;
+use App\Http\Controllers\PropertyImageController;
 
 
 Route::get('/user', function (Request $request) {
@@ -64,7 +66,7 @@ Route::middleware(['auth:sanctum','buyer'])->prefix('buyer')->group(function () 
     Route::delete('/favorites', [FavoriteController::class, 'deleteFavorite']);
 });
 
-// Agent routes
+
 Route::middleware(['auth:sanctum','agent'])->prefix('agent')->group(function () {
     Route::get('/negotiations', [NegotiationController::class, 'received']);
     Route::put('/negotiations/{id}/accept', [NegotiationController::class, 'acceptNegotiation']);
@@ -72,6 +74,15 @@ Route::middleware(['auth:sanctum','agent'])->prefix('agent')->group(function () 
     Route::post('/reviews/reply', [ReviewController::class, 'storeReplay']);
     Route::get('/reviews', [ReviewController::class, 'myReviews']);
     Route::get('/property-stats', [AgentStatsController::class, 'getPropertyStats']);
+
+Route::get('/properties', [PropertyController::class, 'index']);
+Route::post('properties', [PropertyController::class, 'store']);
+Route::get('properties/{id}', [PropertyController::class, 'show']);
+Route::put('properties/{id}', [PropertyController::class, 'update']);
+Route::delete('properties/{id}', [PropertyController::class, 'destroy']);
+Route::get('/properties/{id}/amenities', [PropertyController::class, 'getAmenities']);
+
+
 });
 
 
@@ -81,7 +92,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::put('/profile/update', [ProfileController::class, 'updateProfileInfo']);
     Route::delete('/profile/remove-picture', [ProfileController::class, 'removeProfilePicture']);
 });
-
 
 
 
