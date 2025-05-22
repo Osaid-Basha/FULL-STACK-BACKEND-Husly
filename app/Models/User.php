@@ -87,8 +87,8 @@ public function resetTwoFactorCode()
     }
     public function purchase()
     {
-        //return $this->hasOne(Purchase::class);
-        return $this->hasOne(Purchase::class, 'user_id');
+        //return $this->hasOne(purchase::class);
+        return $this->hasOne(purchase::class, 'user_id');
     }
 
     public function replay ()
