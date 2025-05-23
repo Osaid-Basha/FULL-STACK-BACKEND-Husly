@@ -13,26 +13,7 @@ use Illuminate\Support\Str;
 class AuthController extends Controller
 {
     //
-     /**
- * @OA\Post(
- *     path="/api/register",
- *     summary="Register a new user",
- *     tags={"Authentication"},
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\JsonContent(
- *             required={"first_name", "last_name", "email", "password", "confirm_password", "role_id"},
- *             @OA\Property(property="first_name", type="string", example="Mohammad"),
- *             @OA\Property(property="last_name", type="string", example="Salem"),
- *             @OA\Property(property="email", type="string", format="email", example="mohammad@example.com"),
- *             @OA\Property(property="password", type="string", format="password", example="12345678"),
- *             @OA\Property(property="confirm_password", type="string", format="password", example="12345678"),
- *             @OA\Property(property="role_id", type="integer", example=1)
- *         )
- *     ),
- *     @OA\Response(response=201, description="User registered successfully")
- * )
- */
+
 public function register(Request $request)
 {
     $validated = $request->validate([
@@ -60,25 +41,7 @@ $user = User::create([
         'user' => $user->load('role')
     ], 201);
 }
-   /**
- * @OA\Post(
- *     path="/api/login",
- *     summary="Login user",
- *     tags={"Authentication"},
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\JsonContent(
- *             required={"email", "password", "role"},
- *             @OA\Property(property="email", type="string", format="email", example="mohammad@example.com"),
- *             @OA\Property(property="password", type="string", example="12345678"),
- *             @OA\Property(property="role", type="string", example="admin")
- *         )
- *     ),
- *     @OA\Response(response=201, description="Login successfully"),
- *     @OA\Response(response=403, description="Role mismatch"),
- *     @OA\Response(response=401, description="Incorrect email or password")
- * )
- */
+
 public function login(Request $request)
 {
     $request->validate([
@@ -96,32 +59,20 @@ if ($user->status != 1) {
     return response()->json(['message' => 'Your account is pending approval'], 403);
 }
 
-
+/*
     $user->generateTwoFactorCode();
-    $user->sendTwoFactorCodeEmail();
+    $user->sendTwoFactorCodeEmail(); */
+    $user->resetTwoFactorCode();
+    $token = $user->createToken('authToken')->plainTextToken;
 
     return response()->json([
-        'message' => 'Verification code sent to your email.',
-        'user_id' => $user->id
+        'message' => 'Login successful',
+        'user' => $user,
+        'token' => $token,
     ]);
 }
 
-    /**
- * @OA\Post(
- *     path="/api/logout",
- *     summary="Logout the authenticated user",
- *     tags={"Authentication"},
- *     security={{"sanctum":{}}},
- *     @OA\Response(
- *         response=200,
- *         description="Logged out successfully"
- *     ),
- *     @OA\Response(
- *         response=401,
- *         description="Unauthenticated"
- *     )
- * )
- */
+
 
     public function logout(Request $request)
     {
@@ -130,28 +81,7 @@ if ($user->status != 1) {
     }
 
 
-    /**
- * @OA\Post(
- *     path="/api/forgot-password",
- *     summary="Send password reset link to email",
- *     tags={"Authentication"},
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\JsonContent(
- *             required={"email"},
- *             @OA\Property(property="email", type="string", format="email", example="albashaosayd@example.com")
- *         )
- *     ),
- *     @OA\Response(
- *         response=200,
- *         description="Reset link sent to your email."
- *     ),
- *     @OA\Response(
- *         response=500,
- *         description="Unable to send reset link."
- *     )
- * )
- */
+
 
     public function sendResetLink(Request $request)
     {
@@ -172,25 +102,7 @@ if ($user->status != 1) {
 
 
 
-    /**
-     * @OA\Post(
-     *    path="/api/verify-2fa",
-     *   summary="Verify 2FA code",
-     *   tags={"Authentication"},
-     *  @OA\RequestBody(
-     *        required=true,
-     *       @OA\JsonContent(
-     *           required={"user_id", "code"},
-     *          @OA\Property(property="user_id", type="integer", example=1),
-     *         @OA\Property(property="code", type="string", example="123456")
-     *       )
-     *   ),
-     *  @OA\Response(
-     *       response=200,
-     *      description="2FA Verified Successfully"
-     *  )
-     * )
-  */
+
 
     public function verify2FA(Request $request)
     {
@@ -223,25 +135,7 @@ if ($user->status != 1) {
 
 
 
-    /**
- * @OA\Post(
- *     path="/api/resetPassword",
- *     summary="Reset user password using token",
- *     tags={"Authentication"},
- *     @OA\RequestBody(
- *         required=true,
- *         @OA\JsonContent(
- *             required={"token", "email", "password", "password_confirmation"},
- *             @OA\Property(property="token", type="string", example="abcdef123456"),
- *             @OA\Property(property="email", type="string", format="email", example="osayd@example.com"),
- *             @OA\Property(property="password", type="string", format="password", example="newpassword123"),
- *             @OA\Property(property="password_confirmation", type="string", format="password", example="newpassword123")
- *         )
- *     ),
- *     @OA\Response(response=200, description="Password has been reset"),
- *     @OA\Response(response=500, description="Reset failed")
- * )
- */
+
 
     public function reset(Request $request)
     {

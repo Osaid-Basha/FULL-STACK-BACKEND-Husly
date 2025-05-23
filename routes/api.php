@@ -45,9 +45,9 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/admin/properties', [AdminController::class, 'getAllPropertiesAdmin']);
     Route::get('/admin/properties/search/{keyword}', [AdminController::class, 'SearchPropertyRequest']);
     Route::delete('/admin/properties/{id}', [AdminController::class, 'DeletePropertyAdmin']);
-    Route::get('/reviews/search/{keyword}', [ManageReviewController::class, 'searchReviews']);
-    Route::get('/reviews/getAllReviews', [ManageReviewController::class, 'getAllReviews']);
-    Route::delete('/reviews/{id}', [ManageReviewController::class, 'deleteReview']);
+    Route::get('admin/reviews/search/{keyword}', [ManageReviewController::class, 'searchReviews']);
+    Route::get('admin/reviews/getAllReviews', [ManageReviewController::class, 'getAllReviews']);
+    Route::delete('admin/reviews/{id}', [ManageReviewController::class, 'deleteReview']);
 });
 // Buyer routes
 Route::middleware(['auth:sanctum','buyer'])->prefix('buyer')->group(function () {
@@ -74,8 +74,17 @@ Route::middleware(['auth:sanctum','agent'])->prefix('agent')->group(function () 
     Route::post('/reviews/reply', [ReviewController::class, 'storeReplay']);
     Route::get('/reviews', [ReviewController::class, 'myReviews']);
     Route::get('/property-stats', [AgentStatsController::class, 'getPropertyStats']);
-
-
+    Route::get('/properties', [PropertyController::class, 'index']);
+    Route::post('properties', [PropertyController::class, 'store']);
+    Route::get('properties/{id}', [PropertyController::class, 'show']);
+    Route::put('properties/{id}', [PropertyController::class, 'update']);
+    Route::delete('properties/{id}', [PropertyController::class, 'destroy']);
+    Route::get('/properties/{id}/amenities', [PropertyController::class, 'getAmenities']);
+    Route::get('property-images', [PropertyImageController::class, 'index']);
+    Route::post('property-images', [PropertyImageController::class, 'store']);
+    Route::get('property-images/{id}', [PropertyImageController::class, 'show']);
+    Route::put('property-images/{id}', [PropertyImageController::class, 'update']);
+    Route::delete('property-images/{id}', [PropertyImageController::class,'destroy']);
 
 
 });
@@ -102,15 +111,5 @@ Route::delete('messages/{id}', [MessageController::class, 'destroy']);
 
 
 
-Route::get('/properties', [PropertyController::class, 'index']);
-Route::post('properties', [PropertyController::class, 'store']);
-Route::get('properties/{id}', [PropertyController::class, 'show']);
-Route::put('properties/{id}', [PropertyController::class, 'update']);
-Route::delete('properties/{id}', [PropertyController::class, 'destroy']);
-Route::get('/properties/{id}/amenities', [PropertyController::class, 'getAmenities']);
-//PROPERTY IMAGE
-Route::get('property-images', [PropertyImageController::class, 'index']);
-Route::post('property-images', [PropertyImageController::class, 'store']);
-Route::get('property-images/{id}', [PropertyImageController::class, 'show']);
-Route::put('property-images/{id}', [PropertyImageController::class, 'update']);
-Route::delete('property-images/{id}', [PropertyImageController::class,'destroy']);
+
+

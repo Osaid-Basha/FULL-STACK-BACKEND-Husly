@@ -7,27 +7,12 @@ use Illuminate\Http\Request;
 
 class PropertyController extends Controller
 {
-    /**
-     * @OA\Get(
-     * path="/api/properties",
-     * summary="Get all properties, with optional search by name",
-     * tags={"Properties"},
-     * @OA\Parameter(
-     * name="search",
-     * in="query",
-     * description="Search term for property name (e.g., 'Villa')",
-     * required=false,
-     * @OA\Schema(type="string")
-     * ),
-     * @OA\Response(response=200, description="List of all properties or matching properties")
-     * )
-     */
+
 
     public function index(Request $request)
     {
 
         $query = Property::query();
-
 
         if ($request->has('search')) {
             $searchTerm = $request->input('search');
@@ -40,25 +25,6 @@ class PropertyController extends Controller
         return response()->json($properties, 200);
     }
 
-    /**
-     * @OA\Post(
-     * path="/api/properties",
-     * summary="Add a new property",
-     * tags={"Properties"},
-     * @OA\RequestBody(
-     * required=true,
-     * @OA\JsonContent(
-     * required={"name", "description", "price", "location"},
-     * @OA\Property(property="name", type="string", example="Villa Sunset"),
-     * @OA\Property(property="description", type="string", example="A luxurious villa with a sea view."),
-     * @OA\Property(property="price", type="number", example=350000),
-     * @OA\Property(property="location", type="string", example="123 Beach St, Miami, FL")
-     * )
-     * ),
-     * @OA\Response(response=201, description="Property created successfully"),
-     * @OA\Response(response=422, description="Invalid data"),
-     * )
-     */
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -84,23 +50,7 @@ class PropertyController extends Controller
         return response()->json($property, 201);
     }
 
-    /**
-     * @OA\Get(
-     * path="/api/properties/{id}",
-     * summary="Get a specific property",
-     * tags={"Properties"},
-     * @OA\Parameter(
-     * name="id",
-     * in="path",
-     * description="Property ID",
-     * required=true,
-     * @OA\Schema(type="integer")
-     * ),
-     * @OA\Response(response=200, description="Property details"),
-     * @OA\Response(response=404, description="Property not found"),
-     * )
-     */
-    // هذه الوظيفة تعرض property واحدة فقط عن طريق الـ ID
+
     public function show($id)
     {
         $property = Property::find($id);
@@ -110,31 +60,7 @@ class PropertyController extends Controller
         return response()->json($property, 200);
     }
 
-    /**
-     * @OA\Put(
-     * path="/api/properties/{id}",
-     * summary="Update a property",
-     * tags={"Properties"},
-     * @OA\Parameter(
-     * name="id",
-     * in="path",
-     * description="Property ID",
-     * required=true,
-     * @OA\Schema(type="integer")
-     * ),
-     * @OA\RequestBody(
-     * required=true,
-     * @OA\JsonContent(
-     * @OA\Property(property="name", type="string", example="Villa Sunset Updated"),
-     * @OA\Property(property="description", type="string", example="An updated luxurious villa."),
-     * @OA\Property(property="price", type="number", example=400000),
-     * @OA\Property(property="location", type="string", example="456 Palm St, Miami, FL")
-     * )
-     * ),
-     * @OA\Response(response=200, description="Property updated successfully"),
-     * @OA\Response(response=404, description="Property not found"),
-     * )
-     */
+
     public function update(Request $request, $id)
     {
         $property = Property::find($id);
@@ -166,22 +92,7 @@ class PropertyController extends Controller
     }
 
 
-    /**
-     * @OA\Delete(
-     * path="/api/properties/{id}",
-     * summary="Delete a property",
-     * tags={"Properties"},
-     * @OA\Parameter(
-     * name="id",
-     * in="path",
-     * description="Property ID",
-     * required=true,
-     * @OA\Schema(type="integer")
-     * ),
-     * @OA\Response(response=200, description="Property deleted successfully"),
-     * @OA\Response(response=404, description="Property not found"),
-     * )
-     */
+
     public function destroy($id)
     {
         $property = Property::find($id);
@@ -193,32 +104,7 @@ class PropertyController extends Controller
         return response()->json(['message' => 'Property deleted successfully'], 200);
     }
 
-    /**
-     * @OA\Get(
-     *     path="/api/properties/{propertyId}/amenities",
-     *     summary="Get a list of amenities for a specific property",
-     *     tags={"Properties"},
-     *     @OA\Parameter(
-     *         name="propertyId",
-     *         in="path",
-     *         description="ID of the property",
-     *         required=true,
-     *         @OA\Schema(type="integer")
-     *     ),
-     *     @OA\Response(
-     *         response=200,
-     *         description="List of amenities",
-     *         @OA\JsonContent(
-     *             type="array",
-     *             @OA\Items(type="string", example="garden")
-     *         )
-     *     ),
-     *     @OA\Response(
-     *         response=404,
-     *         description="Property not found"
-     *     )
-     * )
-     */
+
     public function getAmenities($propertyId)
     {
         $property = Property::with('amenity')->find($propertyId);

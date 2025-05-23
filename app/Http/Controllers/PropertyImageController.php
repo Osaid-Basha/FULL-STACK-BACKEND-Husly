@@ -54,8 +54,6 @@ class PropertyImageController extends Controller
             'property_id' => 'required|integer|exists:properties,id',
             'image_url' => 'required|url',
         ]);
-
-
         $image = PropertyImage::create($data);
         return response()->json($image, 201);
     }

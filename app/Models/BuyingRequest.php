@@ -31,6 +31,10 @@ class BuyingRequest extends Model
 {
     return $this->belongsTo(Negotiation::class);
 }
+public function property()
+{
+    return $this->belongsTo(Property::class);
+}
 
 
 }
