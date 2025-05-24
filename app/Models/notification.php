@@ -15,5 +15,20 @@ public function users()
         ->withPivot('is_read', 'read_at', 'status')
         ->withTimestamps();
 }
+public static function sendToUser($userId, $type, $message)
+    {
+        $notification = self::create([
+            'type' => $type,
+            'message_content' => $message,
+        ]);
+
+        $notification->users()->attach($userId, [
+            'is_read' => false,
+            'status' => 'auto',
+            'read_at' => null,
+        ]);
+
+        return $notification;
+    }
 
 }

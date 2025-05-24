@@ -23,6 +23,11 @@ class MessageController extends Controller
             'textContent' => $request->textContent,
             'status' => 'unread',
         ]);
+        Notification::sendToUser(
+            $request->receiver_id,
+            'new_message',
+            "You have a new message from " . Auth::user()->first_name . "."
+        );
 
         return response()->json($message, 201);
     }

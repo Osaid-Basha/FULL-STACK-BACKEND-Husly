@@ -93,21 +93,17 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/messages/send', [MessageController::class, 'send']);//done
     Route::get('/messages/{userId}', [MessageController::class, 'conversation']);//done
     Route::get('/chat/list', [MessageController::class, 'chatList']);//done
-});
-
-
-
-
-
-
-
-Route::middleware('auth:sanctum')->group(function () {
     Route::get('/notifications', [NotificationController::class, 'myNotifications']);
-    Route::post('/notifications/send', [NotificationController::class, 'sendToUser']);
-    Route::post('/notifications/send-all-buyers', [NotificationController::class, 'sendToAllBuyers']);
-    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
-    Route::delete('/notifications/{id}', [NotificationController::class, 'deleteNotification']);
+    Route::put('/notifications/{notificationId}/read', [NotificationController::class, 'markAsRead']);
+    Route::delete('/notifications/{notificationId}', [NotificationController::class, 'deleteNotification']);
 });
+
+
+
+
+
+
+
 
 
 

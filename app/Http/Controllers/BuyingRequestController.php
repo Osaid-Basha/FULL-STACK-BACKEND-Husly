@@ -26,6 +26,14 @@ class BuyingRequestController extends Controller
     $buyingRequest->status = true;
     $buyingRequest->type = 'confirmed';
     $buyingRequest->save();
+    $agentId = $buyingRequest->property->user_id;
+
+Notification::sendToUser(
+    $agentId,
+    'purchase_confirmed',
+    "The buyer has confirmed the purchase of your property: '{$buyingRequest->property->title}'."
+);
+
 
     return response()->json([
         'status' => 200,

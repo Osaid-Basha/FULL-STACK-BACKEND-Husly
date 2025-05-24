@@ -11,27 +11,7 @@ use Illuminate\Support\Carbon;
 class NotificationController extends Controller
 {
    
-    public function sendToUser(Request $request)
-    {
-        $request->validate([
-            'type' => 'required|string|max:50',
-            'message_content' => 'required|string|max:255',
-            'user_id' => 'required|exists:users,id',
-        ]);
-
-        $notification = Notification::create([
-            'type' => $request->type,
-            'message_content' => $request->message_content,
-        ]);
-
-        $notification->users()->attach($request->user_id, [
-            'is_read' => false,
-            'read_at' => null,
-            'status' => 'sent',
-        ]);
-
-        return response()->json(['message' => 'Notification sent', 'notification' => $notification], 201);
-    }
+   
 
     public function sendToAllBuyers(Request $request)
     {
@@ -78,7 +58,7 @@ class NotificationController extends Controller
         return response()->json(['message' => 'Notification marked as read']);
     }
 
-    // حذف إشعار من المستخدم فقط (detach)
+   
     public function deleteNotification($notificationId)
     {
         $user = Auth::user();
@@ -86,4 +66,6 @@ class NotificationController extends Controller
 
         return response()->json(['message' => 'Notification removed from user']);
     }
+
+    
 }

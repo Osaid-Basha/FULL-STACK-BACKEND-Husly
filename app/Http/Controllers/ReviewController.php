@@ -50,6 +50,13 @@ public function storeReview(Request $request)
         'user_id' => Auth::id(),
         'rating' => $request->rating,
     ]);
+    $propertyOwnerId = $buying->property->user_id;
+
+Notification::sendToUser(
+    $propertyOwnerId,
+    'new_review',
+    "You received a new review for your property."
+);
 
     return response()->json([
         'status' => 201,
@@ -79,6 +86,12 @@ public function storeReplay(Request $request)
         'user_id' => Auth::id(),
         'review_id' => $request->review_id,
     ]);
+    $buyerId = $review->user_id;
+    Notification::sendToUser(
+        $buyerId,
+        'reply_review',
+        "Your review has received a reply."
+    );
 
     return response()->json([
         'status' => 201,

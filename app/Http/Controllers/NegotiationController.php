@@ -36,6 +36,12 @@ class NegotiationController extends Controller
             'proposed_price' => $request->proposed_price,
             'status' => 'pending',
         ]);
+        Notification::sendToUser(
+            $property->user_id, // the agent (property owner)
+            'negotiation_created',
+            "You received a new negotiation request for your property '{$property->title}'."
+        );
+        
 
         return response()->json([
             'status' => 201,
@@ -80,6 +86,18 @@ class NegotiationController extends Controller
         'type' => 'pending',
         'negotiation_id' => $negotiation->id,
     ]);
+    Notification::sendToUser(
+        $negotiation->user_id, // the buyer
+        'negotiation_accepted',
+        "Your negotiation for the property '{$negotiation->property->title}' has been accepted."
+    );
+    
+    Notification::sendToUser(
+        $negotiation->agent_id, // the agent
+        'negotiation_confirmed',
+        "You accepted a negotiation and created a pending buying request for '{$negotiation->property->title}'."
+    );
+    
 
     return response()->json([
         'status' => 201,
@@ -101,6 +119,13 @@ class NegotiationController extends Controller
     }
 
     $negotiation->delete();
+    Notification::sendToUser(
+        $negotiation->user_id, // the buyer
+        'negotiation_rejected',
+        "Your negotiation for the property '{$negotiation->property->title}' was rejected."
+    );
+    
+
 
     return response()->json([
         'status' => 200,

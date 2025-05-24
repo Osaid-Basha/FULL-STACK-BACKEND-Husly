@@ -86,6 +86,11 @@ class PropertyController extends Controller
         if (isset($data['amenities'])) {
             $property->amenities()->sync($data['amenities']);
         }
+        Notification::sendToUser(
+            $data['user_id'],
+            'property_created',
+            "Your property '{$property->title}' was successfully created."
+        );
 
         DB::commit();
         return response()->json($property->load('images', 'amenities'), 201);
@@ -179,6 +184,13 @@ class PropertyController extends Controller
             } else {
                 $property->amenities()->detach();
             }
+            Notification::sendToUser(
+                $property->user_id,
+                'property_updated',
+                "Your property '{$property->title}' has been updated successfully."
+            );
+            
+            
 
             DB::commit();
             return response()->json($property->load('images', 'amenities'), 200);
@@ -212,6 +224,12 @@ class PropertyController extends Controller
             $property->delete();
 
             DB::commit();
+            Notification::sendToUser(
+                $property->user_id,
+                'property_deleted',
+                "Your property '{$property->title}' has been deleted."
+            );
+            
             return response()->json(['message' => 'Property deleted successfully'], 200);
         } catch (\Exception $e) {
             DB::rollBack();
