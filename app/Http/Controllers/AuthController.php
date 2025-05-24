@@ -62,28 +62,28 @@ public function login(Request $request)
         'password' => 'required|string'
     ]);
 
-
     if (!Auth::attempt($request->only('email', 'password'))) {
         return response()->json(['message' => 'Invalid credentials'], 401);
     }
 
     $user = User::where('email', $request->email)->first();
-if ($user->status != 1) {
-    return response()->json(['message' => 'Your account is pending approval'], 403);
-}
 
-/*
+    if ($user->status != 1) {
+        return response()->json(['message' => 'Your account is pending approval'], 403);
+    }
+
     $user->generateTwoFactorCode();
-    $user->sendTwoFactorCodeEmail(); */
-    $user->resetTwoFactorCode();
-    $token = $user->createToken('authToken')->plainTextToken;
+
+    $user->sendTwoFactorCodeEmail();
+
+
 
     return response()->json([
-        'message' => 'Login successful',
-        'user' => $user,
-        'token' => $token,
-    ]);
+        'message' => 'Check your email for the 2FA code',
+        'user_id' => $user->id
+    ], 200);
 }
+
 
 
 
@@ -118,32 +118,33 @@ if ($user->status != 1) {
 
 
     public function verify2FA(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|integer',
-            'code' => 'required|string',
-        ]);
+{
+    $request->validate([
+        'user_id' => 'required|integer',
+        'code' => 'required|string',
+    ]);
 
-        $user = User::findOrFail($request->user_id);
+    $user = User::findOrFail($request->user_id);
 
-        if ($user->two_factor_code !== $request->code) {
-            return response()->json(['message' => 'Invalid verification code'], 401);
-        }
-
-        if (Carbon::now()->gt($user->two_factor_expires_at)) {
-            return response()->json(['message' => 'Verification code expired'], 401);
-        }
-
-
-        $user->resetTwoFactorCode();
-        $token = $user->createToken('authToken')->plainTextToken;
-
-        return response()->json([
-            'message' => '2FA Verified Successfully',
-            'user' => $user,
-            'token' => $token,
-        ]);
+    if ($user->two_factor_code !== $request->code) {
+        return response()->json(['message' => 'Invalid verification code'], 401);
     }
+
+    if (Carbon::now()->gt($user->two_factor_expires_at)) {
+        return response()->json(['message' => 'Verification code expired'], 401);
+    }
+
+    $user->resetTwoFactorCode();
+
+    $token = $user->createToken('authToken')->plainTextToken;
+
+    return response()->json([
+        'message' => '2FA Verified Successfully',
+        'user' => $user,
+        'token' => $token,
+    ], 200);
+}
+
 
 
 

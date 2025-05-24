@@ -11,7 +11,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Property;
-use App\Models\Negotiation;
+use App\Models\Notification;
+
 
 class User extends Authenticatable
 {
@@ -95,11 +96,8 @@ public function resetTwoFactorCode()
     {
         return $this->hasMany(Replay::class);
     }
-    public function notifications()
-    {
-        return $this->belongsToMany(Notification::class, 'user_notifications');
+    // User.php
 
-    }
 
     public function sentMessages()
     {
@@ -135,6 +133,12 @@ public function receivedNegotiations()
         'id',
         'id'
     );
+}
+public function notification()
+{
+    return $this->belongsToMany(Notification::class, 'notification_user')
+        ->withPivot('is_read', 'read_at', 'status')
+        ->withTimestamps();
 }
 
 

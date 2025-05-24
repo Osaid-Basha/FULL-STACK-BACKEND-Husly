@@ -3,15 +3,17 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
+use App\Models\User;
 
-class notification extends Model
+class Notification extends Model
 {
     protected $fillable = ['message', 'user_id'];
-    public function user()
-    {
-       return $this->belongsToMany(User::class, 'notification_user')
-            ->withPivot('is_read', 'read_at', 'status')
-            ->withTimestamps();
+  // Notification.php
+public function users()
+{
+    return $this->belongsToMany(User::class, 'notification_user')
+        ->withPivot('is_read', 'read_at', 'status')
+        ->withTimestamps();
+}
 
-    }
 }

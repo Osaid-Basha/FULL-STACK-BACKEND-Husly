@@ -19,7 +19,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AgentStatsController;
 use App\Http\Controllers\MessageController;
-
+use App\Http\Controllers\NotificationController;
 
 
 Route::get('/user', function (Request $request) {
@@ -98,6 +98,16 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
 
 
+
+
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::get('/notifications', [NotificationController::class, 'myNotifications']);
+    Route::post('/notifications/send', [NotificationController::class, 'sendToUser']);
+    Route::post('/notifications/send-all-buyers', [NotificationController::class, 'sendToAllBuyers']);
+    Route::patch('/notifications/{id}/read', [NotificationController::class, 'markAsRead']);
+    Route::delete('/notifications/{id}', [NotificationController::class, 'deleteNotification']);
+});
 
 
 
