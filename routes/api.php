@@ -90,12 +90,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('/profile/remove-picture', [ProfileController::class, 'removeProfilePicture']);
 });
 
+//Message
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/messages/send', [MessageController::class, 'send']);
+    Route::get('/messages/{userId}', [MessageController::class, 'conversation']);
+    Route::get('/chat/list', [MessageController::class, 'chatList']);
+});
 
-
-Route::post('messages', [MessageController::class, 'store']);
-Route::get('messages/{id}', [MessageController::class, 'show']);
-Route::put('messages/{id}', [MessageController::class, 'update']);
-Route::delete('messages/{id}', [MessageController::class, 'destroy']);
 
 
 
