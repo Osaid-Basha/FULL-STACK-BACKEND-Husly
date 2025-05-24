@@ -11,7 +11,7 @@ class amenity extends Model
         'property_id'
 
     ];
-    public function properties()
+    public function properties(): \Illuminate\Database\Eloquent\Relations\BelongsToMany
     {
         return $this->belongsToMany(Property::class, 'property_amenities');
     }
