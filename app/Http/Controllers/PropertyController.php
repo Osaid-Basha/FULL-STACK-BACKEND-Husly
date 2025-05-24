@@ -22,16 +22,15 @@ class PropertyController extends Controller
 
     public function getAllProperties(Request $request): \Illuminate\Http\JsonResponse
     {
-        $userId = Auth::id(); // أو $request->user()->id;
+        $userId = Auth::id(); ;
 
-        $query = Property::query()->where('user_id', $userId); // فلترة حسب المستخدم الحالي
+        $query = Property::query()->where('user_id', $userId);
 
         if ($request->has('search')) {
             $searchTerm = $request->input('search');
             $query->where('title', 'LIKE', '%' . $searchTerm . '%');
         }
 
-        // عرض العقارات الخاصة بالمستخدم مع الصور والمرافق
         $properties = $query->with('images', 'amenities')->get();
 
         return response()->json($properties, 200);
@@ -44,57 +43,58 @@ class PropertyController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function newProperty(Request $request): \Illuminate\Http\JsonResponse
-    {
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
-        }
-
-        $data = $request->validate([
-            'address' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'title' => 'required|string|max:255',
-            'landArea' => 'required|numeric',
-            'price' => 'required|numeric',
-            'bedroom' => 'required|integer',
-            'bathroom' => 'required|integer',
-            'parking' => 'required|integer',
-            'longDescreption' => 'required|string',
-            'shortDescreption' => 'required|string',
-            'constructionArea' => 'required|numeric',
-            'livingArea' => 'required|numeric',
-            'property_listing_id' => 'required|exists:listing_types,id',
-            'property_type_id' => 'required|exists:property_types,id',
-            'purchase_id' => 'required|exists:purchases,id',
-            'user_id' => 'required|exists:users,id',
-            'images' => 'array|nullable',
-            'images.*.imageUrl' => 'url',
-            'amenities' => 'array|nullable',
-            'amenities.*' => 'exists:amenities,id',
-        ]);
-
-        $data['user_id'] = Auth::id();
-
-        DB::beginTransaction();
-        try {
-            $property = Property::create($data);
-
-            if (isset($data['images'])) {
-                foreach ($data['images'] as $image) {
-                    $property->images()->create(['image_url' => $image['image_url']]);
-                }
-            }
-
-            if (isset($data['amenities'])) {
-                $property->amenities()->sync($data['amenities']);
-            }
-
-            DB::commit();
-            return response()->json($property->load('images', 'amenities'), 201);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['message' => 'Error creating property: ' . $e->getMessage()], 500);
-        }
+{
+    if (!Auth::check()) {
+        return response()->json(['message' => 'Unauthenticated.'], 401);
     }
+
+    $data = $request->validate([
+        'address' => 'required|string|max:255',
+        'city' => 'required|string|max:255',
+        'title' => 'required|string|max:255',
+        'landArea' => 'required|numeric',
+        'price' => 'required|numeric',
+        'bedroom' => 'required|integer',
+        'bathroom' => 'required|integer',
+        'parking' => 'required|integer',
+        'longDescreption' => 'required|string',
+        'shortDescreption' => 'required|string',
+        'constructionArea' => 'required|numeric',
+        'livingArea' => 'required|numeric',
+        'property_listing_id' => 'required|exists:listing_types,id',
+        'property_type_id' => 'required|exists:property_types,id',
+        'purchase_id' => 'required|exists:purchases,id',
+        'images' => 'array|nullable',
+        'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        'amenities' => 'array|nullable',
+        'amenities.*' => 'exists:amenities,id',
+    ]);
+
+    $data['user_id'] = Auth::id();
+
+    DB::beginTransaction();
+    try {
+        $property = Property::create($data);
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('property_images', 'public');
+                $property->images()->create(['imageUrl' => $path]);
+            }
+        }
+
+        if (isset($data['amenities'])) {
+            $property->amenities()->sync($data['amenities']);
+        }
+
+        DB::commit();
+        return response()->json($property->load('images', 'amenities'), 201);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json(['message' => 'Error creating property: ' . $e->getMessage()], 500);
+    }
+}
+
 
     /**
      * Display the specified property.

@@ -74,18 +74,11 @@ Route::middleware(['auth:sanctum','agent'])->prefix('agent')->group(function () 
     Route::post('/reviews/reply', [ReviewController::class, 'storeReplay']);
     Route::get('/reviews', [ReviewController::class, 'myReviews']);
     Route::get('/property-stats', [AgentStatsController::class, 'getPropertyStats']);
-    Route::get('/properties', [PropertyController::class, 'index']);
-    Route::post('properties', [PropertyController::class, 'store']);
-    Route::get('properties/{id}', [PropertyController::class, 'show']);
-    Route::put('properties/{id}', [PropertyController::class, 'update']);
-    Route::delete('properties/{id}', [PropertyController::class, 'destroy']);
-    Route::get('/properties/{id}/amenities', [PropertyController::class, 'getAmenities']);
-    Route::get('property-images', [PropertyImageController::class, 'index']);
-    Route::post('property-images', [PropertyImageController::class, 'store']);
-    Route::get('property-images/{id}', [PropertyImageController::class, 'show']);
-    Route::put('property-images/{id}', [PropertyImageController::class, 'update']);
-    Route::delete('property-images/{id}', [PropertyImageController::class,'destroy']);
-
+    Route::get('/properties', [PropertyController::class, 'getAllProperties']);
+    Route::post('properties', [PropertyController::class, 'newProperty']);
+    Route::get('properties/{id}', [PropertyController::class, 'viewProperty']);
+    Route::put('properties/{id}', [PropertyController::class, 'updateProperty']);
+    Route::delete('properties/{id}', [PropertyController::class, 'deleteProperty']);
 
 });
 
