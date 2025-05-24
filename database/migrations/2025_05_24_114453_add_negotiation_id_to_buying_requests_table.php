@@ -11,15 +11,9 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('buying_requests', function (Blueprint $table) {
-            $table->id();
-            $table->boolean('status')->nullable();
-            $table->string('type')->nullable();
-            $table->foreignId('user_id')->constrained()->onDelete('cascade');
-            $table->foreignId('property_id')->constrained()->onDelete('cascade');
+        Schema::table('buying_requests', function (Blueprint $table) {
+            //
              $table->foreignId('negotiation_id')->nullable()->constrained()->onDelete('cascade');
-
-            $table->timestamps();
         });
     }
 
@@ -28,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('buying_requests');
+        Schema::table('buying_requests', function (Blueprint $table) {
+            //
+        });
     }
 };

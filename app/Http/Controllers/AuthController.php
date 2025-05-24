@@ -25,22 +25,35 @@ public function register(Request $request)
         'role_id' => 'required|exists:roles,id',
     ]);
 
-   $status = in_array($validated['role_id'], [2, 3]) ? 0 : 1; // 0 = Pending, 1 = Active
+    $status = in_array($validated['role_id'], [2, 3]) ? 0 : 1; // 0 = Pending, 1 = Active
 
-$user = User::create([
-    'first_name' => $validated['first_name'],
-    'last_name' => $validated['last_name'],
-    'email' => $validated['email'],
-    'password' => Hash::make($validated['password']),
-    'role_id' => $validated['role_id'],
-    'status' => $status,
-]);
+    $user = User::create([
+        'first_name' => $validated['first_name'],
+        'last_name' => $validated['last_name'],
+        'email' => $validated['email'],
+        'password' => Hash::make($validated['password']),
+        'role_id' => $validated['role_id'],
+        'status' => $status,
+    ]);
+
+
+    $user->profile()->create([
+        'phone' => null,
+        'location' => null,
+        'current_position' => null,
+        'facebook_url' => null,
+        'twitter_url' => null,
+        'linkedin_url' => null,
+        'instagram_url' => null,
+        'imag_path' => 'profiles/profile.png',
+    ]);
 
     return response()->json([
         'message' => 'User registered successfully',
-        'user' => $user->load('role')
+        'user' => $user->load('role', 'profile')
     ], 201);
 }
+
 
 public function login(Request $request)
 {
