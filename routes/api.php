@@ -19,7 +19,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AgentStatsController;
 use App\Http\Controllers\MessageController;
-use App\Http\Controllers\NotificationController;
+
 
 
 Route::get('/user', function (Request $request) {
