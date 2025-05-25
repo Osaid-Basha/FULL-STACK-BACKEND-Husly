@@ -25,7 +25,6 @@ class FavoritesSeeder extends Seeder
             DB::table('favorites')->insert([
                 'property_id' => $property_id,
                 'user_id' => $user_id,
-                'available' => rand(0, 1),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);
