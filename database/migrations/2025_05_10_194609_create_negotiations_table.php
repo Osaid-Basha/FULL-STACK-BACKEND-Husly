@@ -17,7 +17,7 @@ return new class extends Migration
             $table->string('status')->default('pending');
             $table->decimal('proposed_price', 10, 2)->nullable();
             $table->foreignId('property_id')->constrained()->onDelete('cascade');
-            
+             $table->foreignId('negotiation_id')->nullable()->constrained()->onDelete('cascade');
 
             $table->timestamps();
         });
