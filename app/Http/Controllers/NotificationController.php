@@ -10,8 +10,8 @@ use Illuminate\Support\Carbon;
 
 class NotificationController extends Controller
 {
-   
-   
+
+
 
     public function sendToAllBuyers(Request $request)
     {
@@ -40,7 +40,7 @@ class NotificationController extends Controller
 
     public function myNotifications()
     {
-        $user = Auth::user();
+        $user = User::find(Auth::id());
         $notifications = $user->notifications()->withPivot('is_read', 'read_at', 'status')->get();
 
         return response()->json(['notifications' => $notifications]);
@@ -48,7 +48,7 @@ class NotificationController extends Controller
 
     public function markAsRead($notificationId)
     {
-        $user = Auth::user();
+        $user = User::find(Auth::id());
 
         $user->notifications()->updateExistingPivot($notificationId, [
             'is_read' => true,
@@ -58,14 +58,14 @@ class NotificationController extends Controller
         return response()->json(['message' => 'Notification marked as read']);
     }
 
-   
+
     public function deleteNotification($notificationId)
     {
-        $user = Auth::user();
+        $user = User::find(Auth::id());
         $user->notifications()->detach($notificationId);
 
         return response()->json(['message' => 'Notification removed from user']);
     }
 
-    
+
 }

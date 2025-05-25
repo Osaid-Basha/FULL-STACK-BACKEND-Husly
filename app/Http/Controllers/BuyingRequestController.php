@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\BuyingRequest;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\Notification;
 class BuyingRequestController extends Controller
 {
     //
@@ -31,7 +31,8 @@ class BuyingRequestController extends Controller
 Notification::sendToUser(
     $agentId,
     'purchase_confirmed',
-    "The buyer has confirmed the purchase of your property: '{$buyingRequest->property->title}'."
+    "The buyer " . Auth::user()->first_name . " has confirmed the purchase of your property: '{$buyingRequest->property->title}'."
+
 );
 
 

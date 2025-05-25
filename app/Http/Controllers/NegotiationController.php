@@ -8,7 +8,7 @@ use App\Models\BuyingRequest;
 use App\Models\User;
 use App\Models\Property;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\Notification;
 class NegotiationController extends Controller
 {
     //
@@ -41,7 +41,7 @@ class NegotiationController extends Controller
             'negotiation_created',
             "You received a new negotiation request for your property '{$property->title}'."
         );
-        
+
 
         return response()->json([
             'status' => 201,
@@ -91,13 +91,13 @@ class NegotiationController extends Controller
         'negotiation_accepted',
         "Your negotiation for the property '{$negotiation->property->title}' has been accepted."
     );
-    
+
     Notification::sendToUser(
         $negotiation->agent_id, // the agent
         'negotiation_confirmed',
         "You accepted a negotiation and created a pending buying request for '{$negotiation->property->title}'."
     );
-    
+
 
     return response()->json([
         'status' => 201,
@@ -124,7 +124,7 @@ class NegotiationController extends Controller
         'negotiation_rejected',
         "Your negotiation for the property '{$negotiation->property->title}' was rejected."
     );
-    
+
 
 
     return response()->json([

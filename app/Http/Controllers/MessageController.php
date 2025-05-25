@@ -6,10 +6,10 @@ use Illuminate\Http\Request;
 use App\Models\Message;
 use App\Models\User;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\Notification;
 class MessageController extends Controller
 {
-    // إرسال رسالة
+  
     public function send(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([

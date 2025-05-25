@@ -7,7 +7,7 @@ use App\Models\Review;
 use App\Models\Replay;
 use App\Models\BuyingRequest;
 use Illuminate\Support\Facades\Auth;
-
+use App\Models\Notification;
 class ReviewController extends Controller
 {
     //
@@ -55,7 +55,8 @@ public function storeReview(Request $request)
 Notification::sendToUser(
     $propertyOwnerId,
     'new_review',
-    "You received a new review for your property."
+    "You received a new review for your property '{$buying->property->title}'."
+
 );
 
     return response()->json([
@@ -90,7 +91,8 @@ public function storeReplay(Request $request)
     Notification::sendToUser(
         $buyerId,
         'reply_review',
-        "Your review has received a reply."
+        "Your review on '{$review->buyingRequest->property->title}' has been replied to."
+
     );
 
     return response()->json([

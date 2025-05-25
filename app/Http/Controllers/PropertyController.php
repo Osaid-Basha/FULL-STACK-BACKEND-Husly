@@ -8,6 +8,8 @@ use App\Models\Amenity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Notification;
+use App\Models\User;
 
 class PropertyController extends Controller
 {
@@ -86,11 +88,14 @@ class PropertyController extends Controller
         if (isset($data['amenities'])) {
             $property->amenities()->sync($data['amenities']);
         }
-        Notification::sendToUser(
-            $data['user_id'],
-            'property_created',
-            "Your property '{$property->title}' was successfully created."
-        );
+       $recipients = User::whereIn('role_id', [1, 3])->pluck('id')->toArray();
+
+Notification::sendToMultipleUsers(
+    $recipients,
+    'property_created',
+    "A new property '{$property->title}' has been added to the system."
+);
+
 
         DB::commit();
         return response()->json($property->load('images', 'amenities'), 201);
@@ -184,13 +189,16 @@ class PropertyController extends Controller
             } else {
                 $property->amenities()->detach();
             }
-            Notification::sendToUser(
-                $property->user_id,
-                'property_updated',
-                "Your property '{$property->title}' has been updated successfully."
-            );
-            
-            
+           $recipients = User::whereIn('role_id', [1, 3])->pluck('id')->toArray();
+
+Notification::sendToMultipleUsers(
+    $recipients,
+    'property_updated',
+    "The property '{$property->title}' has been updated."
+);
+
+
+
 
             DB::commit();
             return response()->json($property->load('images', 'amenities'), 200);
@@ -224,12 +232,15 @@ class PropertyController extends Controller
             $property->delete();
 
             DB::commit();
-            Notification::sendToUser(
-                $property->user_id,
-                'property_deleted',
-                "Your property '{$property->title}' has been deleted."
-            );
-            
+          $recipients = User::whereIn('role_id', [1, 3])->pluck('id')->toArray();
+
+Notification::sendToMultipleUsers(
+    $recipients,
+    'property_deleted',
+    "The property '{$property->title}' has been deleted."
+);
+
+
             return response()->json(['message' => 'Property deleted successfully'], 200);
         } catch (\Exception $e) {
             DB::rollBack();

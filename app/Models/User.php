@@ -134,12 +134,13 @@ public function receivedNegotiations()
         'id'
     );
 }
-public function notification()
+public function notifications()
 {
     return $this->belongsToMany(Notification::class, 'notification_user')
         ->withPivot('is_read', 'read_at', 'status')
         ->withTimestamps();
 }
+
 
 
 
