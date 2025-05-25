@@ -17,6 +17,7 @@ return new class extends Migration
             $table->string('type')->nullable();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->foreignId('property_id')->constrained()->onDelete('cascade');
+             $table->foreignId('negotiation_id')->nullable()->constrained()->onDelete('cascade');
 
             $table->timestamps();
         });

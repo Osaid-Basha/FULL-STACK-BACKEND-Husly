@@ -7,11 +7,13 @@ use Illuminate\Database\Eloquent\Model;
 class Negotiation extends Model
 {
     //
-    protected $fillable = [
-        'status',
-        'type',
-        'property_id',
-    ];
+   protected $fillable = [
+    'user_id',
+    'property_id',
+    'proposed_price',
+    'status',
+];
+
    public function user()
 {
     return $this->belongsTo(User::class);

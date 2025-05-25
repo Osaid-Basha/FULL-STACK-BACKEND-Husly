@@ -8,14 +8,16 @@ use App\Models\Property;
 
 class AdminController extends Controller
 {
-    public function getAllUsersAdmin(){
+   public function getAllUsersAdmin()
+{
+    $users = User::with('profile')->get();
 
-        $users=User::all();
-        return response()->json([
-            'status'=>200,
-            'users'=>$users
-        ]);
-    }
+    return response()->json([
+        'status' => 200,
+        'users' => $users
+    ]);
+}
+
     public function ApproveUserRequest($id)
 {
     $user = User::find($id);

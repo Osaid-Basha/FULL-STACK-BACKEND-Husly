@@ -25,22 +25,35 @@ public function register(Request $request)
         'role_id' => 'required|exists:roles,id',
     ]);
 
-   $status = in_array($validated['role_id'], [2, 3]) ? 0 : 1; // 0 = Pending, 1 = Active
+    $status = in_array($validated['role_id'], [2, 3]) ? 0 : 1; // 0 = Pending, 1 = Active
 
-$user = User::create([
-    'first_name' => $validated['first_name'],
-    'last_name' => $validated['last_name'],
-    'email' => $validated['email'],
-    'password' => Hash::make($validated['password']),
-    'role_id' => $validated['role_id'],
-    'status' => $status,
-]);
+    $user = User::create([
+        'first_name' => $validated['first_name'],
+        'last_name' => $validated['last_name'],
+        'email' => $validated['email'],
+        'password' => Hash::make($validated['password']),
+        'role_id' => $validated['role_id'],
+        'status' => $status,
+    ]);
+
+
+    $user->profile()->create([
+        'phone' => null,
+        'location' => null,
+        'current_position' => null,
+        'facebook_url' => null,
+        'twitter_url' => null,
+        'linkedin_url' => null,
+        'instagram_url' => null,
+        'imag_path' => 'profiles/profile.png',
+    ]);
 
     return response()->json([
         'message' => 'User registered successfully',
-        'user' => $user->load('role')
+        'user' => $user->load('role', 'profile')
     ], 201);
 }
+
 
 public function login(Request $request)
 {
@@ -49,28 +62,29 @@ public function login(Request $request)
         'password' => 'required|string'
     ]);
 
-
     if (!Auth::attempt($request->only('email', 'password'))) {
         return response()->json(['message' => 'Invalid credentials'], 401);
     }
 
     $user = User::where('email', $request->email)->first();
-if ($user->status != 1) {
-    return response()->json(['message' => 'Your account is pending approval'], 403);
-}
 
-/*
-    $user->generateTwoFactorCode();
+    if ($user->status != 1) {
+        return response()->json(['message' => 'Your account is pending approval'], 403);
+    }
+
+   /*  $user->generateTwoFactorCode();
+
     $user->sendTwoFactorCodeEmail(); */
-    $user->resetTwoFactorCode();
-    $token = $user->createToken('authToken')->plainTextToken;
+$token = $user->createToken('authToken')->plainTextToken;
+
 
     return response()->json([
         'message' => 'Login successful',
-        'user' => $user,
+        'user' => $user->load('role', 'profile'),
         'token' => $token,
-    ]);
+    ], 200);
 }
+
 
 
 
@@ -105,32 +119,33 @@ if ($user->status != 1) {
 
 
     public function verify2FA(Request $request)
-    {
-        $request->validate([
-            'user_id' => 'required|integer',
-            'code' => 'required|string',
-        ]);
+{
+    $request->validate([
+        'user_id' => 'required|integer',
+        'code' => 'required|string',
+    ]);
 
-        $user = User::findOrFail($request->user_id);
+    $user = User::findOrFail($request->user_id);
 
-        if ($user->two_factor_code !== $request->code) {
-            return response()->json(['message' => 'Invalid verification code'], 401);
-        }
-
-        if (Carbon::now()->gt($user->two_factor_expires_at)) {
-            return response()->json(['message' => 'Verification code expired'], 401);
-        }
-
-
-        $user->resetTwoFactorCode();
-        $token = $user->createToken('authToken')->plainTextToken;
-
-        return response()->json([
-            'message' => '2FA Verified Successfully',
-            'user' => $user,
-            'token' => $token,
-        ]);
+    if ($user->two_factor_code !== $request->code) {
+        return response()->json(['message' => 'Invalid verification code'], 401);
     }
+
+    if (Carbon::now()->gt($user->two_factor_expires_at)) {
+        return response()->json(['message' => 'Verification code expired'], 401);
+    }
+
+    $user->resetTwoFactorCode();
+
+    //$token = $user->createToken('authToken')->plainTextToken;
+
+    return response()->json([
+        'message' => '2FA Verified Successfully',
+        'user' => $user,
+       //'token' => $token,
+    ], 200);
+}
+
 
 
 

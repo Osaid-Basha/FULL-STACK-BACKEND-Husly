@@ -5,17 +5,27 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Models\purchase;
+use App\Models\BuyingRequest;
 use Illuminate\Support\Facades\Auth;
 
 class PurchaseController extends Controller
 {
 
     public function getAllPurchases()
-    {
-        $userid=Auth::user();
-        $purchases = purchase::with('user', 'properties')->where('user_id', $userid->id)->get();
-        return response()->json($purchases);
-    }
+{
+    $userId = Auth::id();
+
+    $requests = BuyingRequest::with(['property', 'property.listing_type'])
+        ->where('user_id', $userId)
+        ->where('status', true) // ✅ تم التأكيد
+        ->get();
+
+    return response()->json([
+        'status' => 200,
+        'purchases' => $requests,
+    ]);
+}
+
 
 
    public function searchPurchase($keyword)

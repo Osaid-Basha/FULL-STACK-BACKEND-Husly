@@ -19,7 +19,7 @@ use App\Http\Controllers\PurchaseController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AgentStatsController;
 use App\Http\Controllers\MessageController;
-
+use App\Http\Controllers\NotificationController;
 
 
 Route::get('/user', function (Request $request) {
@@ -93,5 +93,22 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/messages/send', [MessageController::class, 'send']);//done
     Route::get('/messages/{userId}', [MessageController::class, 'conversation']);//done
     Route::get('/chat/list', [MessageController::class, 'chatList']);//done
-
+    Route::get('/notifications', [NotificationController::class, 'myNotifications']);
+    Route::put('/notifications/{notificationId}/read', [NotificationController::class, 'markAsRead']);
+    Route::delete('/notifications/{notificationId}', [NotificationController::class, 'deleteNotification']);
 });
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

@@ -5,10 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\Message;
 use App\Models\User;
-
+use Illuminate\Support\Facades\Auth;
+use App\Models\Notification;
 class MessageController extends Controller
 {
-    // إرسال رسالة
+  
     public function send(Request $request): \Illuminate\Http\JsonResponse
     {
         $request->validate([
@@ -17,27 +18,31 @@ class MessageController extends Controller
         ]);
 
         $message = Message::create([
-            'user_sender_id' => auth()->id(),
+            'user_sender_id' => Auth::id(),
             'user_receiver_id' => $request->receiver_id,
             'textContent' => $request->textContent,
             'status' => 'unread',
         ]);
+        Notification::sendToUser(
+            $request->receiver_id,
+            'new_message',
+            "You have a new message from " . Auth::user()->first_name . "."
+        );
 
         return response()->json($message, 201);
     }
 
-    // جلب المحادثة + تعليم الرسائل كمقروءة
+
     public function conversation($userId): \Illuminate\Http\JsonResponse
     {
-        $authId = auth()->id();
+        $authId = Auth::id();
 
-        // تعليم الرسائل كمقروءة
+
         Message::where('user_sender_id', $userId)
             ->where('user_receiver_id', $authId)
             ->where('status', 'unread')
             ->update(['status' => 'read']);
 
-        // جلب المحادثة بين المستخدمين
         $messages = Message::where(function ($query) use ($authId, $userId) {
             $query->where('user_sender_id', $authId)->where('user_receiver_id', $userId);
         })->orWhere(function ($query) use ($authId, $userId) {
@@ -47,10 +52,9 @@ class MessageController extends Controller
         return response()->json($messages);
     }
 
-    // جلب المستخدمين الذين تم التحدث معهم
     public function chatList(Request $request): \Illuminate\Http\JsonResponse
     {
-        $authId = auth()->id();
+        $authId = Auth::id();
         $search = $request->query('search');
 
         $contactIds = Message::where('user_sender_id', $authId)
