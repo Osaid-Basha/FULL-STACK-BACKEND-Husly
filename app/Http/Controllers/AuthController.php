@@ -72,15 +72,16 @@ public function login(Request $request)
         return response()->json(['message' => 'Your account is pending approval'], 403);
     }
 
-    $user->generateTwoFactorCode();
+   /*  $user->generateTwoFactorCode();
 
-    $user->sendTwoFactorCodeEmail();
-
+    $user->sendTwoFactorCodeEmail(); */
+$token = $user->createToken('authToken')->plainTextToken;
 
 
     return response()->json([
-        'message' => 'Check your email for the 2FA code',
-        'user_id' => $user->id
+        'message' => 'Login successful',
+        'user' => $user->load('role', 'profile'),
+        'token' => $token,
     ], 200);
 }
 
@@ -136,12 +137,12 @@ public function login(Request $request)
 
     $user->resetTwoFactorCode();
 
-    $token = $user->createToken('authToken')->plainTextToken;
+    //$token = $user->createToken('authToken')->plainTextToken;
 
     return response()->json([
         'message' => '2FA Verified Successfully',
         'user' => $user,
-        'token' => $token,
+       //'token' => $token,
     ], 200);
 }
 
