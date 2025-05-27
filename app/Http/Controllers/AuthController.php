@@ -59,24 +59,25 @@ public function login(Request $request)
 {
     $request->validate([
         'email' => 'required|email',
-        'password' => 'required|string'
+        'password' => 'required|string',
+        'role' => 'required|string'
     ]);
 
-    if (!Auth::attempt($request->only('email', 'password'))) {
+    $user = User::where('email', $request->email)->with('role')->first();
+
+    if (!$user || !Hash::check($request->password, $user->password)) {
         return response()->json(['message' => 'Invalid credentials'], 401);
     }
-
-    $user = User::where('email', $request->email)->first();
 
     if ($user->status != 1) {
         return response()->json(['message' => 'Your account is pending approval'], 403);
     }
 
-   /*  $user->generateTwoFactorCode();
+    if (strtolower($user->role->type) !== strtolower($request->role)) {
+        return response()->json(['message' => 'You are not authorized to login as this role'], 403);
+    }
 
-    $user->sendTwoFactorCodeEmail(); */
-$token = $user->createToken('authToken')->plainTextToken;
-
+    $token = $user->createToken('authToken')->plainTextToken;
 
     return response()->json([
         'message' => 'Login successful',
@@ -97,22 +98,21 @@ $token = $user->createToken('authToken')->plainTextToken;
 
 
 
-    public function sendResetLink(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email'
-        ]);
 
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
 
-        return $status === Password::RESET_LINK_SENT
-            ? response()->json([
-                'message' => 'Reset link sent to your email.'
-            ])
-            : response()->json(['message' => 'Unable to send reset link.'], 500);
-    }
+public function sendResetLink(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email'
+    ]);
+
+    $status = Password::sendResetLink($request->only('email'));
+
+    $token = $request->user()->createToken('authToken')->plainTextToken;
+    return $status === Password::RESET_LINK_SENT
+        ? response()->json(['message' => 'Reset link sent to your email.'])
+        : response()->json(['message' => 'Unable to send reset link.'], 500);
+}
 
 
 
@@ -170,6 +170,7 @@ $token = $user->createToken('authToken')->plainTextToken;
                 ])->save();
             }
         );
+
 
         return $status === Password::PASSWORD_RESET
             ? response()->json(['message' => 'Password has been reset.'])

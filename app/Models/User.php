@@ -12,6 +12,9 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Property;
 use App\Models\Notification;
+use App\Notifications\ResetPasswordNotification;
+
+
 
 
 class User extends Authenticatable
@@ -78,6 +81,10 @@ public function resetTwoFactorCode()
           //  'password' => 'hashed',
         ];
     }
+    public function sendPasswordResetNotification($token)
+{
+    $this->notify(new ResetPasswordNotification($token));
+}
     public function property()
     {
         return $this->hasMany(Property::class);

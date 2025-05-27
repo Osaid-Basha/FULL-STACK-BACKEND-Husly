@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Property;
+use Illuminate\Support\Facades\Auth;
+use App\Models\Review;
 
 class AdminController extends Controller
 {
@@ -92,14 +94,23 @@ class AdminController extends Controller
             ]);
         }
     }
-    public function getAllPropertiesAdmin()
+    public function getAllPropertiesAdmin(Request $request)
     {
-        $properties = Property::all();
-        return response()->json([
-            'status' => 200,
-            'properties' => $properties
-        ]);
+
+
+        $query = Property::query();
+
+        if ($request->has('search')) {
+            $searchTerm = $request->input('search');
+            $query->where('title', 'LIKE', '%' . $searchTerm . '%');
+        }
+
+        $properties = $query->with('images', 'amenities')->get();
+
+        return response()->json($properties, 200);
+
     }
+
     public function DeletePropertyAdmin($id)
     {
         $property = Property::find($id);
@@ -125,6 +136,45 @@ class AdminController extends Controller
             'status' => 200,
             'properties' => $properties
         ]);
+    }
+    public function getPendingUsers(){
+        $pendingUsers = User::where('status', 0)->get();
+        return response()->json([
+            'status' => 200,
+            'pending_users' => $pendingUsers
+        ]);
+    }
+    public function getPropertyById($id)
+    {
+       $property = Property::with('images', 'amenities')->find($id);
+        if (!$property) {
+            return response()->json(['message' => 'Property not found'], 404);
+        }
+
+
+        return response()->json($property, 200);
+    }
+    public function getStatisticsAdmin(){
+
+        $totalProperties = Property::count();
+        $totalAgents = User::where('role_id', 2)->count(); // Assuming role_id 2 is for agents
+        $totalUsers = User::count();
+        $totalReviews = Review::count();
+        $avgRating = Review::avg('rating');
+
+
+
+
+        return response()->json([
+            'status' => 200,
+            'total_properties' => $totalProperties,
+            'total_agents' => $totalAgents,
+            'total_users' => $totalUsers,
+            'total_reviews' => $totalReviews,
+            'average_rating' => $avgRating
+
+        ]);
+
     }
 
 }

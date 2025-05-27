@@ -17,7 +17,7 @@ class PurchaseController extends Controller
 
     $requests = BuyingRequest::with(['property', 'property.listing_type'])
         ->where('user_id', $userId)
-        ->where('status', true) // ✅ تم التأكيد
+        ->where('status', true)
         ->get();
 
     return response()->json([

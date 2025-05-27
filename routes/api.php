@@ -44,8 +44,11 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/admin', [AdminController::class, 'AddUserAdmin']);//done
     Route::delete('/admin/{id}', [AdminController::class, 'DeleteUserAdmin']);//done
     Route::get('/admin/properties', [AdminController::class, 'getAllPropertiesAdmin']);//done
+    Route::get('/admin/properties/{id}', [AdminController::class, 'getPropertyById']);//done
     Route::get('/admin/properties/search/{keyword}', [AdminController::class, 'SearchPropertyRequest']);//done
     Route::delete('/admin/properties/{id}', [AdminController::class, 'DeletePropertyAdmin']);//done
+    Route::get('/admin/user/pending' , [AdminController::class, 'getPendingUsers']);//done
+    Route::get('admin/user/stats', [AdminController::class, 'getStatisticsAdmin']);//done
     Route::get('admin/reviews/search/{keyword}', [ManageReviewController::class, 'searchReviews']);//done
     Route::get('admin/reviews/getAllReviews', [ManageReviewController::class, 'getAllReviews']);//done
     Route::delete('admin/reviews/{id}', [ManageReviewController::class, 'deleteReview']);//done
