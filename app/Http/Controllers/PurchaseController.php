@@ -32,7 +32,7 @@ class PurchaseController extends Controller
 {
     $userId = Auth::id();
 
-    $purchases = purchase::with('user', 'properties')
+    $purchases = Purchase::with('user', 'properties')
         ->where('user_id', $userId)
         ->where(function ($query) use ($keyword) {
             $query->where('description', 'like', "%$keyword%")

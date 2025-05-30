@@ -13,79 +13,91 @@ class ProfileController extends Controller
 
 
     public function getProfileByUid()
-{
-    $user = User::with('profile')->find(Auth::id());
+    {
+        $user = User::with('profile')->find(Auth::id());
 
-    if (!$user->profile) {
+        if (!$user || !$user->profile) {
+            return response()->json([
+                'error' => 'Profile not found.'
+            ], 404);
+        }
+
         return response()->json([
-            'error' => 'Profile not found.'
-        ], 404);
+            'status' => 200,
+            'user' => [
+                'id' => $user->id,
+                'first_name' => $user->first_name,
+                'last_name' => $user->last_name,
+                'email' => $user->email,
+            ],
+            'profile' => $user->profile,
+            'imag_url' => $user->profile->imag_path
+                ? asset('storage/' . $user->profile->imag_path)
+                : null
+        ]);
     }
 
-    return response()->json([
-        'status' => 200,
-        'user' => [
-            'id' => $user->id,
-            'first_name' => $user->first_name,
-            'last_name' => $user->last_name,
-            'email' => $user->email,
-        ],
-        'profile' => $user->profile,
-        'imag_url' => $user->profile->image_path
-            ? asset('storage/' . $user->profile->image_path)
-            : null
-    ]);
-}
-
-
-
-
-
     public function updateProfileInfo(Request $request)
-{
-    $userId = Auth::id();
+    {
+        $userId = Auth::id();
 
-    $validated = $request->validate([
-        'phone' => 'nullable|string|max:20',
-        'location' => 'nullable|string|max:255',
-        'current_position' => 'nullable|string|max:255',
-        'facebook_url' => 'nullable|url',
-        'twitter_url' => 'nullable|url',
-        'linkedin_url' => 'nullable|url',
-        'instagram_url' => 'nullable|url',
-        'imag_path' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-    ]);
+        $validated = $request->validate([
+            // بيانات جدول users
+            'first_name' => 'nullable|string|max:255',
+            'last_name' => 'nullable|string|max:255',
+            'email' => 'nullable|email|max:255',
 
-    $profile = Profile::where('user_id', $userId)->firstOrFail();
+            // بيانات جدول profile
+            'phone' => 'nullable|string|max:20',
+        ]);
 
-    $profile->fill([
-        'phone' => $validated['phone'] ?? $profile->phone,
-        'location' => $validated['location'] ?? $profile->location,
-        'current_position' => $validated['current_position'] ?? $profile->current_position,
-        'facebook_url' => $validated['facebook_url'] ?? $profile->facebook_url,
-        'twitter_url' => $validated['twitter_url'] ?? $profile->twitter_url,
-        'linkedin_url' => $validated['linkedin_url'] ?? $profile->linkedin_url,
-        'instagram_url' => $validated['instagram_url'] ?? $profile->instagram_url,
-    ]);
+        // تحديث بيانات المستخدم
+        $user = User::findOrFail($userId);
+        $user->first_name = $validated['first_name'] ?? $user->first_name;
+        $user->last_name = $validated['last_name'] ?? $user->last_name;
+        $user->email = $validated['email'] ?? $user->email;
+        $user->save();
 
-    if ($request->hasFile('imag_path')) {
+        // تحديث بيانات البروفايل
+        $profile = Profile::where('user_id', $userId)->firstOrFail();
+        $profile->phone = $validated['phone'] ?? $profile->phone;
+        $profile->save();
+
+        return response()->json([
+            'message' => 'Profile updated successfully.',
+            'user' => $user,
+            'profile' => $profile
+        ], 200);
+    }
+
+    public function updateProfilePicture(Request $request)
+    {
+        $request->validate([
+            'image' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048'
+        ]);
+
+        $user = Auth::user();
+        $profile = $user->profile;
+
+        if (!$profile) {
+            return response()->json(['error' => 'Profile not found.'], 404);
+        }
+
+        // حذف الصورة القديمة
         if ($profile->imag_path && Storage::disk('public')->exists($profile->imag_path)) {
             Storage::disk('public')->delete($profile->imag_path);
         }
 
-        $path = $request->file('imag_path')->store('profiles', 'public');
+        // رفع الصورة الجديدة
+        $path = $request->file('image')->store('profiles', 'public');
         $profile->imag_path = $path;
+        $profile->save();
+
+        return response()->json([
+            'message' => 'Profile picture updated.',
+            'imag_url' => asset('storage/' . $path)
+        ], 200);
     }
-
-    $profile->save();
-
-    return response()->json([
-        'message' => 'Profile updated.',
-        'profile' => $profile,
-        'imag_url' => $profile->imag_path ? asset('storage/' . $profile->imag_path) : null
-    ], 200);
-}
-
 
 
 
