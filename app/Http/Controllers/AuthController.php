@@ -77,14 +77,20 @@ public function login(Request $request)
         return response()->json(['message' => 'You are not authorized to login as this role'], 403);
     }
 
-    $token = $user->createToken('authToken')->plainTextToken;
-
+    $user->generateTwoFactorCode();
+    $user->sendTwoFactorCodeEmail();
     return response()->json([
-        'message' => 'Login successful',
-        'user' => $user->load('role', 'profile'),
-        'token' => $token,
+        'message' => ' please verify your 2FA code',
+        'user_id' => $user->id,
     ], 200);
+
 }
+
+
+
+
+
+
 
 
 
@@ -108,7 +114,7 @@ public function sendResetLink(Request $request)
 
     $status = Password::sendResetLink($request->only('email'));
 
-    $token = $request->user()->createToken('authToken')->plainTextToken;
+
     return $status === Password::RESET_LINK_SENT
         ? response()->json(['message' => 'Reset link sent to your email.'])
         : response()->json(['message' => 'Unable to send reset link.'], 500);
@@ -117,15 +123,14 @@ public function sendResetLink(Request $request)
 
 
 
-
-    public function verify2FA(Request $request)
+public function verify2FA(Request $request)
 {
     $request->validate([
         'user_id' => 'required|integer',
         'code' => 'required|string',
     ]);
 
-    $user = User::findOrFail($request->user_id);
+    $user = User::with('role')->findOrFail($request->user_id);
 
     if ($user->two_factor_code !== $request->code) {
         return response()->json(['message' => 'Invalid verification code'], 401);
@@ -137,14 +142,15 @@ public function sendResetLink(Request $request)
 
     $user->resetTwoFactorCode();
 
-    //$token = $user->createToken('authToken')->plainTextToken;
+    $token = $user->createToken('authToken')->plainTextToken;
 
     return response()->json([
         'message' => '2FA Verified Successfully',
         'user' => $user,
-       //'token' => $token,
+        'token' => $token,
     ], 200);
 }
+
 
 
 
@@ -178,6 +184,15 @@ public function sendResetLink(Request $request)
     }
 
 
+public function resend2FA(Request $request)
+{
+    $user = User::findOrFail($request->user_id);
+
+    $user->generateTwoFactorCode();
+    $user->sendTwoFactorCodeEmail();
+
+    return response()->json(['message' => 'A new code has been sent.']);
+}
 
 
 

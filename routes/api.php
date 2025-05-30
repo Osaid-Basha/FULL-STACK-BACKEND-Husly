@@ -29,6 +29,7 @@ Route::get('/user', function (Request $request) {
 // Authentication routes
 Route::post('/register', [AuthController::class, 'register']);//done
 Route::post('/login', [AuthController::class, 'login']);//done
+Route::post('/resend-2fa', [AuthController::class, 'resend2FA']);//done
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');//done
 Route::post('/forgot-password', [AuthController::class, 'sendResetLink']);//done
 Route::post('/verify2FA', [AuthController::class, 'verify2FA']);//done
