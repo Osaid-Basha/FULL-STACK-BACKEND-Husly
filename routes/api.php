@@ -92,8 +92,9 @@ Route::middleware(['auth:sanctum','agent'])->prefix('agent')->group(function () 
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'getProfileByUid']);//done
-    Route::put('/profile/update', [ProfileController::class, 'updateProfileInfo']);//done
+    Route::post('/profile/update', [ProfileController::class, 'updateProfileInfo']);//done
     Route::delete('/profile/remove-picture', [ProfileController::class, 'removeProfilePicture']);//done
+    Route::post('/profile/update-picture', [ProfileController::class, 'updateProfilePicture']);//done
     Route::post('/messages/send', [MessageController::class, 'send']);//done
     Route::get('/messages/{userId}', [MessageController::class, 'conversation']);//done
     Route::get('/chat/list', [MessageController::class, 'chatList']);//done
