@@ -29,6 +29,7 @@ Route::get('/user', function (Request $request) {
 // Authentication routes
 Route::post('/register', [AuthController::class, 'register']);//done
 Route::post('/login', [AuthController::class, 'login']);//done
+Route::post('/resend-2fa', [AuthController::class, 'resend2FA']);//done
 Route::post('/logout', [AuthController::class, 'logout'])->middleware('auth:sanctum');//done
 Route::post('/forgot-password', [AuthController::class, 'sendResetLink']);//done
 Route::post('/verify2FA', [AuthController::class, 'verify2FA']);//done
@@ -44,8 +45,11 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::post('/admin', [AdminController::class, 'AddUserAdmin']);//done
     Route::delete('/admin/{id}', [AdminController::class, 'DeleteUserAdmin']);//done
     Route::get('/admin/properties', [AdminController::class, 'getAllPropertiesAdmin']);//done
+    Route::get('/admin/properties/{id}', [AdminController::class, 'getPropertyById']);//done
     Route::get('/admin/properties/search/{keyword}', [AdminController::class, 'SearchPropertyRequest']);//done
     Route::delete('/admin/properties/{id}', [AdminController::class, 'DeletePropertyAdmin']);//done
+    Route::get('/admin/user/pending' , [AdminController::class, 'getPendingUsers']);//done
+    Route::get('admin/user/stats', [AdminController::class, 'getStatisticsAdmin']);//done
     Route::get('admin/reviews/search/{keyword}', [ManageReviewController::class, 'searchReviews']);//done
     Route::get('admin/reviews/getAllReviews', [ManageReviewController::class, 'getAllReviews']);//done
     Route::delete('admin/reviews/{id}', [ManageReviewController::class, 'deleteReview']);//done
@@ -88,8 +92,9 @@ Route::middleware(['auth:sanctum','agent'])->prefix('agent')->group(function () 
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/profile', [ProfileController::class, 'getProfileByUid']);//done
-    Route::put('/profile/update', [ProfileController::class, 'updateProfileInfo']);//done
+    Route::post('/profile/update', [ProfileController::class, 'updateProfileInfo']);//done
     Route::delete('/profile/remove-picture', [ProfileController::class, 'removeProfilePicture']);//done
+    Route::post('/profile/update-picture', [ProfileController::class, 'updateProfilePicture']);//done
     Route::post('/messages/send', [MessageController::class, 'send']);//done
     Route::get('/messages/{userId}', [MessageController::class, 'conversation']);//done
     Route::get('/chat/list', [MessageController::class, 'chatList']);//done

@@ -14,8 +14,10 @@ class FavoriteController extends Controller
     public function getAllFavorites()
     {
         $userId=Auth::id();
-        $favorites = Favorites::with('user', 'property')->where('user_id', $userId)->get();
+//        $favorites = Favorites::with('user', 'property')->where('user_id', $userId)->get();
+        $favorites = Favorites::with(['property.images'])->where('user_id', $userId)->get();
         return response()->json($favorites);
+
     }
 
 
@@ -45,26 +47,28 @@ public function addFavorite(Request $request)
     return response()->json(['message' => 'Added to favorites'], 201);
 }
 
-public function deleteFavorite(Request $request)
-{
-    $request->validate([
-        'property_id' => 'required|exists:properties,id',
-    ]);
+    public function deleteFavorite(Request $request)
+    {
+        $request->validate([
+            'property_id' => 'required|exists:properties,id',
+        ]);
 
-    $userId = Auth::id();
+        $userId = Auth::id();
 
-    $favorite = Favorites::where('user_id', $userId)
-                        ->where('property_id', $request->property_id)
-                        ->first();
+        $propertyId = $request->query('property_id'); // هنا نأخذها من query string
 
-    if (!$favorite) {
-        return response()->json(['message' => 'Not found'], 404);
+        $favorite = Favorites::where('user_id', $userId)
+            ->where('property_id', $propertyId)
+            ->first();
+
+        if (!$favorite) {
+            return response()->json(['message' => 'Not found'], 404);
+        }
+
+        $favorite->delete();
+
+        return response()->json(['message' => 'Removed from favorites'], 200);
     }
-
-    $favorite->delete();
-
-    return response()->json(['message' => 'Removed from favorites'], 200);
-}
 
 
 }

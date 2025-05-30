@@ -52,7 +52,12 @@ return [
     |
     */
 
-    'url' => env('APP_URL', 'http://localhost'),
+    'url' => env('APP_URL', 'http://localhost:8080'),
+   'frontend_url' => env('APP_FRONTEND_URL', 'http://localhost:8080'),
+
+
+
+
 
     /*
     |--------------------------------------------------------------------------
@@ -77,6 +82,7 @@ return [
     | set to any locale for which you plan to have translation strings.
     |
     */
+
 
     'locale' => env('APP_LOCALE', 'en'),
 

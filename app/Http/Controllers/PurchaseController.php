@@ -17,7 +17,7 @@ class PurchaseController extends Controller
 
     $requests = BuyingRequest::with(['property', 'property.listing_type'])
         ->where('user_id', $userId)
-        ->where('status', true) // ✅ تم التأكيد
+        ->where('status', true)
         ->get();
 
     return response()->json([
@@ -32,7 +32,7 @@ class PurchaseController extends Controller
 {
     $userId = Auth::id();
 
-    $purchases = purchase::with('user', 'properties')
+    $purchases = Purchase::with('user', 'properties')
         ->where('user_id', $userId)
         ->where(function ($query) use ($keyword) {
             $query->where('description', 'like', "%$keyword%")

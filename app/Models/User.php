@@ -12,6 +12,9 @@ use Illuminate\Notifications\Notifiable;
 use Illuminate\Support\Facades\Mail;
 use App\Models\Property;
 use App\Models\Notification;
+use App\Notifications\ResetPasswordNotification;
+
+use App\Mail\CustomMail;
 
 
 class User extends Authenticatable
@@ -53,6 +56,20 @@ class User extends Authenticatable
             ->subject('Your 2FA Code');
     });
 }
+public function sendWelcomeEmail()
+{
+    Mail::to($this->email)->send(new CustomMail(
+        '🎉 Welcome to Realstate App!',
+        "
+        <h2 style='color:#2c3e50;'>Hello {$this->first_name} 👋,</h2>
+        <p style='font-size:16px; color:#34495e;'>Welcome to <strong>Realstate App</strong>!<br>We’re excited to have you on board.</p>
+        <p style='font-size:15px; color:#7f8c8d;'>You can now explore the best properties, manage your listings, and get instant notifications.</p>
+        <p style='margin-top: 30px;'><a href='http://localhost:8080/#/login' style='background-color: #3498db;color: white;padding: 10px 20px;text-decoration: none;border-radius: 6px;font-weight: bold;'>Start Exploring</a></p>
+        <p style='margin-top: 40px; font-size:13px; color:#95a5a6;'>If you have any questions, feel free to reply to this email. We're here to help.</p>
+        <p style='color:#bdc3c7;'>— The Realstate App Team</p>
+        "
+    ));
+}
   public function generateTwoFactorCode()
 {
     $this->two_factor_code = rand(1000, 9999);
@@ -78,6 +95,10 @@ public function resetTwoFactorCode()
           //  'password' => 'hashed',
         ];
     }
+    public function sendPasswordResetNotification($token)
+{
+    $this->notify(new ResetPasswordNotification($token));
+}
     public function property()
     {
         return $this->hasMany(Property::class);

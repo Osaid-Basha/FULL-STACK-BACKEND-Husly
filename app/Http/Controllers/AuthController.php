@@ -59,31 +59,38 @@ public function login(Request $request)
 {
     $request->validate([
         'email' => 'required|email',
-        'password' => 'required|string'
+        'password' => 'required|string',
+        'role' => 'required|string'
     ]);
 
-    if (!Auth::attempt($request->only('email', 'password'))) {
+    $user = User::where('email', $request->email)->with('role')->first();
+
+    if (!$user || !Hash::check($request->password, $user->password)) {
         return response()->json(['message' => 'Invalid credentials'], 401);
     }
-
-    $user = User::where('email', $request->email)->first();
 
     if ($user->status != 1) {
         return response()->json(['message' => 'Your account is pending approval'], 403);
     }
 
-   /*  $user->generateTwoFactorCode();
+    if (strtolower($user->role->type) !== strtolower($request->role)) {
+        return response()->json(['message' => 'You are not authorized to login as this role'], 403);
+    }
 
-    $user->sendTwoFactorCodeEmail(); */
-$token = $user->createToken('authToken')->plainTextToken;
-
-
+    $user->generateTwoFactorCode();
+    $user->sendTwoFactorCodeEmail();
     return response()->json([
-        'message' => 'Login successful',
-        'user' => $user->load('role', 'profile'),
-        'token' => $token,
+        'message' => ' please verify your 2FA code',
+        'user_id' => $user->id,
     ], 200);
+
 }
+
+
+
+
+
+
 
 
 
@@ -97,35 +104,33 @@ $token = $user->createToken('authToken')->plainTextToken;
 
 
 
-    public function sendResetLink(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email'
-        ]);
 
-        $status = Password::sendResetLink(
-            $request->only('email')
-        );
 
-        return $status === Password::RESET_LINK_SENT
-            ? response()->json([
-                'message' => 'Reset link sent to your email.'
-            ])
-            : response()->json(['message' => 'Unable to send reset link.'], 500);
-    }
+public function sendResetLink(Request $request)
+{
+    $request->validate([
+        'email' => 'required|email'
+    ]);
 
+    $status = Password::sendResetLink($request->only('email'));
+
+
+    return $status === Password::RESET_LINK_SENT
+        ? response()->json(['message' => 'Reset link sent to your email.'])
+        : response()->json(['message' => 'Unable to send reset link.'], 500);
+}
 
 
 
 
-    public function verify2FA(Request $request)
+public function verify2FA(Request $request)
 {
     $request->validate([
         'user_id' => 'required|integer',
         'code' => 'required|string',
     ]);
 
-    $user = User::findOrFail($request->user_id);
+    $user = User::with('role')->findOrFail($request->user_id);
 
     if ($user->two_factor_code !== $request->code) {
         return response()->json(['message' => 'Invalid verification code'], 401);
@@ -137,14 +142,15 @@ $token = $user->createToken('authToken')->plainTextToken;
 
     $user->resetTwoFactorCode();
 
-    //$token = $user->createToken('authToken')->plainTextToken;
+    $token = $user->createToken('authToken')->plainTextToken;
 
     return response()->json([
         'message' => '2FA Verified Successfully',
         'user' => $user,
-       //'token' => $token,
+        'token' => $token,
     ], 200);
 }
+
 
 
 
@@ -171,12 +177,22 @@ $token = $user->createToken('authToken')->plainTextToken;
             }
         );
 
+
         return $status === Password::PASSWORD_RESET
             ? response()->json(['message' => 'Password has been reset.'])
             : response()->json(['message' => 'Reset failed.'], 500);
     }
 
 
+public function resend2FA(Request $request)
+{
+    $user = User::findOrFail($request->user_id);
+
+    $user->generateTwoFactorCode();
+    $user->sendTwoFactorCodeEmail();
+
+    return response()->json(['message' => 'A new code has been sent.']);
+}
 
 
 
