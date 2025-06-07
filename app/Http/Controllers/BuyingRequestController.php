@@ -9,10 +9,9 @@ use App\Models\Notification;
 class BuyingRequestController extends Controller
 {
     //
-    public function confirm($id)
+   public function confirm($id)
 {
     $buyingRequest = BuyingRequest::where('id', $id)
-        ->where('user_id', Auth::id())
         ->where('status', false)
         ->first();
 
@@ -26,15 +25,15 @@ class BuyingRequestController extends Controller
     $buyingRequest->status = true;
     $buyingRequest->type = 'confirmed';
     $buyingRequest->save();
-    $agentId = $buyingRequest->property->user_id;
 
-Notification::sendToUser(
-    $agentId,
-    'purchase_confirmed',
-    "The buyer " . Auth::user()->first_name . " has confirmed the purchase of your property: '{$buyingRequest->property->title}'."
+    // إرسال إشعار للمشتري مش للمالك
+    $buyerId = $buyingRequest->user_id;
 
-);
-
+    Notification::sendToUser(
+        $buyerId,
+        'purchase_confirmed',
+        "Your purchase request for property '{$buyingRequest->property->title}' has been confirmed."
+    );
 
     return response()->json([
         'status' => 200,

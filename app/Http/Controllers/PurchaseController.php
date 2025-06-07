@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use Illuminate\Http\JsonResponse;
 use App\Models\purchase;
 use App\Models\BuyingRequest;
+use App\Models\Negotiation;
 use Illuminate\Support\Facades\Auth;
 
 class PurchaseController extends Controller
@@ -23,6 +24,27 @@ class PurchaseController extends Controller
     return response()->json([
         'status' => 200,
         'purchases' => $requests,
+    ]);
+}
+public function getMyNegotiations()
+{
+    $userId = Auth::id();
+
+   
+    $mySentOffers = Negotiation::with(['property', 'user'])
+        ->where('user_id', $userId)
+        ->get();
+
+
+    $myAcceptedOffers = Negotiation::with(['property', 'user'])
+        ->where('user_id', $userId)
+        ->where('status', 'accepted')
+        ->get();
+
+    return response()->json([
+        'status' => 200,
+        'my_sent_offers' => $mySentOffers,
+        'my_accepted_offers' => $myAcceptedOffers,
     ]);
 }
 

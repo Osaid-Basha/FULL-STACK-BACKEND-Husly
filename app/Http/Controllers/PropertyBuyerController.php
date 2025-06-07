@@ -73,7 +73,7 @@ class PropertyBuyerController extends Controller
 
 
 
-   public function show($id)
+ public function show($id)
 {
     $property = Property::with([
         'property_type',
@@ -81,7 +81,9 @@ class PropertyBuyerController extends Controller
         'purchase',
         'images',
         'user.profile',
-        'amenities'
+        'amenities',
+        'reviews.user.profile',
+        'reviews.replies'      
     ])->find($id);
 
     if (!$property) {
@@ -90,5 +92,6 @@ class PropertyBuyerController extends Controller
 
     return response()->json($property);
 }
+
 
 }
