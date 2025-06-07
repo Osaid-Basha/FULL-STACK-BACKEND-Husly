@@ -8,13 +8,16 @@ class BuyerController extends Controller
 {
 
     public function getAllAgents()
-    {
-        $agents = User::whereHas('role', function ($query) {
+{
+    $agents = User::with('profile') // نحمل علاقة البروفايل
+        ->whereHas('role', function ($query) {
             $query->where('type', 'agent');
-        })->get();
+        })
+        ->get();
 
-        return response()->json($agents);
-    }
+    return response()->json($agents);
+}
+
 
     public function searchAgents($keyword)
     {

@@ -18,10 +18,15 @@ class NegotiationController extends Controller
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
-        $request->validate([
-            'property_id' => 'required|exists:properties,id',
-            'proposed_price' => 'required|numeric|min:1',
-        ]);
+      $request->validate([
+    'property_id' => 'required|exists:properties,id',
+    'proposed_price' => 'required|numeric|min:1',
+    'phone' => 'required|string|min:6',
+    'email' => 'required|email',
+    'message' => 'nullable|string|max:1000',
+]);
+
+
 
         $property = Property::find($request->property_id);
 
@@ -29,13 +34,18 @@ class NegotiationController extends Controller
             return response()->json(['message' => 'Property not found'], 404);
         }
 
-        $negotiation = Negotiation::create([
-            'user_id' => Auth::id(),
-            'agent_id' => $property->user_id,
-            'property_id' => $request->property_id,
-            'proposed_price' => $request->proposed_price,
-            'status' => 'pending',
-        ]);
+       $negotiation = Negotiation::create([
+    'user_id' => Auth::id(),
+    'agent_id' => $property->user_id,
+    'property_id' => $request->property_id,
+    'proposed_price' => $request->proposed_price,
+    'phone' => $request->phone,
+    'email' => $request->email,
+    'message' => $request->message,
+    'status' => 'pending',
+]);
+
+
         Notification::sendToUser(
             $property->user_id, // the agent (property owner)
             'negotiation_created',

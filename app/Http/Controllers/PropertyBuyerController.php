@@ -24,7 +24,7 @@ class PropertyBuyerController extends Controller
 
 
 
-  public function search(Request $request)
+ public function search(Request $request)
 {
     $query = Property::with([
         'images',
@@ -57,13 +57,20 @@ class PropertyBuyerController extends Controller
     }
 
     if ($request->keyword) {
-        $query->where('title', 'LIKE', "%{$request->keyword}%");
+        $query->where(function ($q) use ($request) {
+            $q->where('title', 'LIKE', "%{$request->keyword}%")
+              ->orWhere('shortDescreption', 'LIKE', "%{$request->keyword}%");
+        });
     }
 
-    $results = $query->get();
+    $results = $query->get(); // أو paginate(10)
 
-    return response()->json($results);
+    return response()->json([
+        'success' => true,
+        'data' => $results
+    ]);
 }
+
 
 
    public function show($id)
@@ -73,8 +80,8 @@ class PropertyBuyerController extends Controller
         'listing_type',
         'purchase',
         'images',
-        'user',
-        'amenities' 
+        'user.profile',
+        'amenities'
     ])->find($id);
 
     if (!$property) {

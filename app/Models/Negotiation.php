@@ -12,6 +12,11 @@ class Negotiation extends Model
     'property_id',
     'proposed_price',
     'status',
+    'phone',
+    'email',
+        'message'
+
+
 ];
 
    public function user()
