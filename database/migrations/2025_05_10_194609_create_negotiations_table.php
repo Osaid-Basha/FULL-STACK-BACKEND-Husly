@@ -18,6 +18,10 @@ return new class extends Migration
             $table->decimal('proposed_price', 10, 2)->nullable();
             $table->foreignId('property_id')->constrained()->onDelete('cascade');
              $table->foreignId('negotiation_id')->nullable()->constrained()->onDelete('cascade');
+               $table->string('phone')->nullable();
+        $table->string('email')->nullable();
+       $table->text('message')->nullable();
+
 
             $table->timestamps();
         });

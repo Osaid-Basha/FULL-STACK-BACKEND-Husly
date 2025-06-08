@@ -57,7 +57,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
 // Buyer routes
 Route::middleware(['auth:sanctum','buyer'])->prefix('buyer')->group(function () {
     Route::post('/negotiations/propose', [NegotiationController::class, 'propose']);//done
-    Route::post('/buying-requests/confirm/{id}', [BuyingRequestController::class, 'confirm']);//done
+
     Route::post('/reviews', [ReviewController::class, 'storeReview']);//done
     Route::get('/properties', [PropertyBuyerController::class, 'getAllProperties']);//done
     Route::get('/properties/search', [PropertyBuyerController::class, 'search']);//done
@@ -70,6 +70,7 @@ Route::middleware(['auth:sanctum','buyer'])->prefix('buyer')->group(function () 
     Route::get('/favorites', [FavoriteController::class, 'getAllFavorites']);//done
     Route::post('/favorites', [FavoriteController::class, 'addFavorite']);//done
     Route::delete('/favorites', [FavoriteController::class, 'deleteFavorite']);//done
+     Route::get('/negotiations/purchases', [PurchaseController::class, 'getMyNegotiations']);//done
 });
 
 
@@ -85,6 +86,7 @@ Route::middleware(['auth:sanctum','agent'])->prefix('agent')->group(function () 
     Route::get('properties/{id}', [PropertyController::class, 'viewProperty']);//done
     Route::put('properties/{id}', [PropertyController::class, 'updateProperty']);//done
     Route::delete('properties/{id}', [PropertyController::class, 'deleteProperty']);//done
+    Route::put('/buying-requests/confirm/{id}', [BuyingRequestController::class, 'confirm']);//done
 
 });
 
@@ -95,9 +97,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/profile/update', [ProfileController::class, 'updateProfileInfo']);//done
     Route::delete('/profile/remove-picture', [ProfileController::class, 'removeProfilePicture']);//done
     Route::post('/profile/update-picture', [ProfileController::class, 'updateProfilePicture']);//done
+    Route::get('/chat/list', [MessageController::class, 'chatList']);//done
     Route::post('/messages/send', [MessageController::class, 'send']);//done
     Route::get('/messages/{userId}', [MessageController::class, 'conversation']);//done
-    Route::get('/chat/list', [MessageController::class, 'chatList']);//done
+
     Route::get('/notifications', [NotificationController::class, 'myNotifications']);
     Route::put('/notifications/{notificationId}/read', [NotificationController::class, 'markAsRead']);
     Route::delete('/notifications/{notificationId}', [NotificationController::class, 'deleteNotification']);

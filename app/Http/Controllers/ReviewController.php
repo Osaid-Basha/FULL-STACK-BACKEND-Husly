@@ -106,17 +106,22 @@ public function myReviews()
 {
     $agentId = Auth::id();
 
-    $reviews = Review::with(['user', 'replies.user', 'buyingRequest.property'])
-        ->whereHas('buyingRequest.property', function ($query) use ($agentId) {
-            $query->where('user_id', $agentId);
-        })
-        ->get();
+    $reviews = Review::with([
+        'user.profile',     // ✅ جلب صورة المستخدم
+        'replies.user',
+        'buyingRequest.property'
+    ])
+    ->whereHas('buyingRequest.property', function ($query) use ($agentId) {
+        $query->where('user_id', $agentId);
+    })
+    ->get();
 
     return response()->json([
         'status' => 200,
         'reviews' => $reviews
     ]);
 }
+
 
 
 public function searchReviews($keyword)

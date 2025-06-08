@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Password;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Log;
 use App\Models\User;
+use App\Models\TrustedDevice;
 use Carbon\Carbon;
 use Illuminate\Support\Str;
 
@@ -60,7 +62,8 @@ public function login(Request $request)
     $request->validate([
         'email' => 'required|email',
         'password' => 'required|string',
-        'role' => 'required|string'
+        'role' => 'required|string',
+        'remember_me' => 'sometimes|boolean'
     ]);
 
     $user = User::where('email', $request->email)->with('role')->first();
@@ -77,15 +80,57 @@ public function login(Request $request)
         return response()->json(['message' => 'You are not authorized to login as this role'], 403);
     }
 
+
+   $trustedToken = $request->header('X-Trusted-Device');
+Log::info('X-Trusted-Device Received:', [$trustedToken]);
+
+if ($trustedToken) {
+    $trusted = TrustedDevice::where('user_id', $user->id)
+        ->where('device_token', $trustedToken)
+        ->where('expires_at', '>', now())
+        ->first();
+
+    if ($trusted) {
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Login via trusted device',
+            'user' => $user,
+            'token' => $token
+        ], 200);
+    }
+}
+
+
+
+    if ($request->boolean('remember_me')) {
+        $trusted_token = Str::random(64);
+
+       TrustedDevice::create([
+            'user_id' => $user->id,
+            'device_token' => $trusted_token,
+            'device_name' => $request->header('User-Agent'),
+            'ip_address' => $request->ip(),
+            'expires_at' => now()->addDays(30)
+        ]);
+
+        $token = $user->createToken('authToken')->plainTextToken;
+
+        return response()->json([
+            'message' => 'Login successful without 2FA',
+            'user' => $user,
+            'token' => $token,
+            'trusted_token' => $trusted_token
+        ], 200);
+    }
+
     $user->generateTwoFactorCode();
     $user->sendTwoFactorCodeEmail();
     return response()->json([
-        'message' => ' please verify your 2FA code',
+        'message' => 'Please verify your 2FA code',
         'user_id' => $user->id,
     ], 200);
-
 }
-
 
 
 
@@ -128,6 +173,7 @@ public function verify2FA(Request $request)
     $request->validate([
         'user_id' => 'required|integer',
         'code' => 'required|string',
+        'remember_me' => 'sometimes|boolean'
     ]);
 
     $user = User::with('role')->findOrFail($request->user_id);
@@ -144,12 +190,30 @@ public function verify2FA(Request $request)
 
     $token = $user->createToken('authToken')->plainTextToken;
 
-    return response()->json([
+    $response = [
         'message' => '2FA Verified Successfully',
         'user' => $user,
         'token' => $token,
-    ], 200);
+    ];
+
+
+    if ($request->boolean('remember_me')) {
+        $trusted_token = Str::random(64);
+
+        TrustedDevice::create([
+            'user_id' => $user->id,
+            'device_token' => $trusted_token,
+            'device_name' => $request->header('User-Agent'),
+            'ip_address' => $request->ip(),
+            'expires_at' => now()->addDays(30)
+        ]);
+
+        $response['trusted_token'] = $trusted_token;
+    }
+
+    return response()->json($response, 200);
 }
+
 
 
 
