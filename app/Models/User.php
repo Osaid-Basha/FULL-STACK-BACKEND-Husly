@@ -51,10 +51,11 @@ class User extends Authenticatable
     ];
     public function sendTwoFactorCodeEmail()
 {
-    Mail::raw("Your verification code is: {$this->two_factor_code}", function ($message) {
-        $message->to($this->email)
-            ->subject('Your 2FA Code');
-    });
+   Mail::raw("Your verification code is: {$this->plain_code}", function ($message) {
+    $message->to($this->email)
+        ->subject('Your 2FA Code');
+});
+
 }
 public function sendWelcomeEmail()
 {
@@ -70,12 +71,17 @@ public function sendWelcomeEmail()
         "
     ));
 }
-  public function generateTwoFactorCode()
+public function generateTwoFactorCode()
 {
-    $this->two_factor_code = rand(1000, 9999);
+    $code = rand(1000, 9999);
+    $this->two_factor_code = bcrypt($code);
     $this->two_factor_expires_at = now()->addMinutes(5);
     $this->save();
+
+
+    $this->plain_code = $code;
 }
+
 
 public function resetTwoFactorCode()
 {
@@ -107,11 +113,7 @@ public function resetTwoFactorCode()
     {
         return $this->hasMany(Favorites::class);
     }
-    public function purchase()
-    {
-        //return $this->hasOne(purchase::class);
-        return $this->hasOne(purchase::class, 'user_id');
-    }
+    
 
     public function replay ()
     {
