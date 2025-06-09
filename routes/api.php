@@ -25,6 +25,13 @@ use App\Http\Controllers\NotificationController;
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/fix-env', function () {
+    Artisan::call('config:clear');
+    Artisan::call('config:cache');
+    return '✅ Laravel environment refreshed!';
+});
 
 // Authentication routes
 Route::post('/register', [AuthController::class, 'register']);//done
