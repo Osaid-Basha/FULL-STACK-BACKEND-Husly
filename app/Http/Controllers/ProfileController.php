@@ -42,25 +42,35 @@ class ProfileController extends Controller
         $userId = Auth::id();
 
         $validated = $request->validate([
-            // بيانات جدول users
+            // users table
             'first_name' => 'nullable|string|max:255',
             'last_name' => 'nullable|string|max:255',
             'email' => 'nullable|email|max:255',
 
-            // بيانات جدول profile
+            // profile table
             'phone' => 'nullable|string|max:20',
+            'location' => 'nullable|string|max:255',
+            'current_position' => 'nullable|string|max:255',
+            'facebook_url' => 'nullable|string|max:255',
+            'twitter_url' => 'nullable|string|max:255',
+            'linkedin_url' => 'nullable|string|max:255',
+            'instagram_url' => 'nullable|string|max:255',
         ]);
 
-        // تحديث بيانات المستخدم
         $user = User::findOrFail($userId);
         $user->first_name = $validated['first_name'] ?? $user->first_name;
         $user->last_name = $validated['last_name'] ?? $user->last_name;
         $user->email = $validated['email'] ?? $user->email;
         $user->save();
 
-        // تحديث بيانات البروفايل
         $profile = Profile::where('user_id', $userId)->firstOrFail();
         $profile->phone = $validated['phone'] ?? $profile->phone;
+        $profile->location = $validated['location'] ?? $profile->location;
+        $profile->current_position = $validated['current_position'] ?? $profile->current_position;
+        $profile->facebook_url = $validated['facebook_url'] ?? $profile->facebook_url;
+        $profile->twitter_url = $validated['twitter_url'] ?? $profile->twitter_url;
+        $profile->linkedin_url = $validated['linkedin_url'] ?? $profile->linkedin_url;
+        $profile->instagram_url = $validated['instagram_url'] ?? $profile->instagram_url;
         $profile->save();
 
         return response()->json([
