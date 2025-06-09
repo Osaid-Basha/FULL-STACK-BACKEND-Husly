@@ -24,6 +24,10 @@ use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
+Route::get('/seed-admin', function () {
+    Artisan::call('db:seed', ['--class' => 'AdminSeeder']);
+    return 'admin added';
+});
 
 
 Route::get('/check-tables', function () {
