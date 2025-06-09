@@ -108,7 +108,7 @@ if ($trustedToken) {
             'device_token' => $trusted_token,
             'device_name' => $request->header('User-Agent'),
             'ip_address' => $request->ip(),
-            'expires_at' => Carbon::now()->addDays(30)
+            'expires_at' => now()->addDays(30)
         ]);
 
         $token = $user->createToken('authToken')->plainTextToken;
