@@ -65,10 +65,7 @@ Route::get('/migrate-now', function () {
 });
 ;
 
-Route::get('/migrate-now', function () {
-    Artisan::call('migrate', ['--force' => true]);
-    return '✅ Migrations executed!';
-});
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
