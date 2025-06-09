@@ -33,12 +33,19 @@ class BuyerController extends Controller
 
 public function getAgentById($id)
 {
-    $agent = User::with(['profile', 'property'])
-        ->whereHas('role', function ($query) {
-            $query->where('type', 'agent');
-        })
-        ->where('id', $id)
-        ->first();
+    $agent = User::with([
+        'profile',
+        'reviews.user',
+        'property.images',        // ✅ صور العقار
+        'property.amenities',     // ✅ المرافق
+        'property.property_type', // ✅ نوع العقار
+        'property.listing_type',  // ✅ نوع الإعلان
+    ])
+    ->whereHas('role', function ($query) {
+        $query->where('type', 'agent');
+    })
+    ->where('id', $id)
+    ->first();
 
     if (!$agent) {
         return response()->json(['message' => 'Agent not found'], 404);
@@ -49,6 +56,9 @@ public function getAgentById($id)
         'agent' => $agent
     ]);
 }
+
+
+
 
 
 }

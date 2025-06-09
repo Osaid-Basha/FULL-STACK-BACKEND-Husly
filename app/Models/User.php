@@ -14,42 +14,42 @@ use App\Models\Property;
 use App\Models\Notification;
 use App\Notifications\ResetPasswordNotification;
 
+
 use App\Mail\CustomMail;
 
 
 class User extends Authenticatable
 {
-   use HasApiTokens, HasFactory, Notifiable;
+use HasApiTokens, HasFactory, Notifiable;
 
+/**
+ * The attributes that are mass assignable.
+ *
+ * @var list<string>
+ */
+protected $fillable = [
+    'first_name',
+    'last_name',
+    'email',
+    'password',
+    'role_id',
+    'remember_token',
+    'two_factor_code',
+    'two_factor_expires_at',
+    'status',
+];
 
+/**
+ * The attributes that should be hidden for serialization.
+ *
+ * @var list<string>
+ */
+protected $hidden = [
+    'password',
+    'remember_token',
+];
 
-    /**
-     * The attributes that are mass assignable.
-     *
-     * @var list<string>
-     */
-    protected $fillable = [
-        'first_name',
-        'last_name',
-        'email',
-        'password',
-        'role_id',
-        'remember_token',
-        'two_factor_code',
-        'two_factor_expires_at',
-        'status',
-    ];
-
-    /**
-     * The attributes that should be hidden for serialization.
-     *
-     * @var list<string>
-     */
-    protected $hidden = [
-        'password',
-        'remember_token',
-    ];
-    public function sendTwoFactorCodeEmail()
+public function sendTwoFactorCodeEmail()
 {
    Mail::raw("Your verification code is: {$this->plain_code}", function ($message) {
     $message->to($this->email)
@@ -113,7 +113,7 @@ public function resetTwoFactorCode()
     {
         return $this->hasMany(Favorites::class);
     }
-    
+
 
     public function replay ()
     {
@@ -121,6 +121,10 @@ public function resetTwoFactorCode()
     }
     // User.php
 
+public function reviews()
+{
+    return $this->hasMany(\App\Models\Review::class, 'user_id');
+}
 
     public function sentMessages()
     {

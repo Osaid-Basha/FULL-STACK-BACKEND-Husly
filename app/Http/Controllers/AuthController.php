@@ -62,7 +62,7 @@ public function login(Request $request)
     $request->validate([
         'email' => 'required|email',
         'password' => 'required|string',
-        
+
         'remember_me' => 'sometimes|boolean'
     ]);
 

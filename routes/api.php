@@ -21,10 +21,62 @@ use App\Http\Controllers\AgentStatsController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
 
+use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
+
+
+
+Route::get('/run-seeder', function () {
+    try {
+        Artisan::call('db:seed', ['--force' => true]);
+
+        return response()->json([
+            'message' => '✅ All seeders executed from DatabaseSeeder',
+            'output' => Artisan::output(),
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'error' => true,
+            'message' => $e->getMessage()
+        ], 500);
+    }
+});
+
+
+
+Route::get('/check-tables', function () {
+    $tables = DB::select('SHOW TABLES');
+    return response()->json($tables);
+});
+
+
+
+Route::get('/migrate-now', function () {
+    try {
+        Artisan::call('migrate', ['--force' => true]);
+        return response()->json(['message' => '✅ Migrations executed!']);
+    } catch (\Exception $e) {
+        return response()->json([
+            'error' => true,
+            'message' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ], 500);
+    }
+});
+;
+
+
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
+
+
+Route::get('/fix-env', function () {
+    Artisan::call('config:clear');
+    Artisan::call('config:cache');
+    return '✅ Laravel environment refreshed!';
+});
 
 // Authentication routes
 Route::post('/register', [AuthController::class, 'register']);//done
