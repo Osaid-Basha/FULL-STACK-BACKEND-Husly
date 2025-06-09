@@ -6,7 +6,10 @@ nixPkgs = ["php", "php81Packages.composer", "nodejs"]
 
 [phases.install]
 cmds = [
-  "composer install --ignore-platform-reqs",
+  "php -v",
+  "composer -V",
+  "composer validate",
+  "composer install --ignore-platform-reqs -vvv", # verbose output
   "npm install"
 ]
 
