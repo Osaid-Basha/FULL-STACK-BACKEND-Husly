@@ -24,10 +24,24 @@ use App\Http\Controllers\NotificationController;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
-Route::get('/seed-admin', function () {
-    Artisan::call('db:seed', ['--class' => 'AdminSeeder']);
-    return 'admin added';
+
+
+Route::get('/run-seeder', function () {
+    try {
+        Artisan::call('db:seed', ['--force' => true]);
+
+        return response()->json([
+            'message' => '✅ All seeders executed from DatabaseSeeder',
+            'output' => Artisan::output(),
+        ]);
+    } catch (\Throwable $e) {
+        return response()->json([
+            'error' => true,
+            'message' => $e->getMessage()
+        ], 500);
+    }
 });
+
 
 
 Route::get('/check-tables', function () {
