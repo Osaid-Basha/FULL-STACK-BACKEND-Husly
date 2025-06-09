@@ -13,8 +13,7 @@ class PropertySeeder extends Seeder
         $listingTypeIds = DB::table('listing_types')->pluck('id');
         $propertyTypeIds = DB::table('property_types')->pluck('id');
         $userIds = DB::table('users')->pluck('id');
-        $purchaseIds = DB::table('purchases')->pluck('id');
-
+       
         foreach (range(1, 10) as $i) {
             DB::table('properties')->insert([
                 'address' => 'Street ' . $i,
@@ -33,7 +32,6 @@ class PropertySeeder extends Seeder
                 'property_listing_id' => $listingTypeIds->random(),
                 'property_type_id' => $propertyTypeIds->random(),
                 'user_id' => $userIds->random(),
-                'purchase_id' => $purchaseIds->random(),
                 'created_at' => now(),
                 'updated_at' => now(),
             ]);

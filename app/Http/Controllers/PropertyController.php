@@ -3,30 +3,28 @@
 namespace App\Http\Controllers;
 
 use App\Models\Property;
-use App\Models\PropertyImage; // Make sure this is imported
-use App\Models\Amenity;     // Make sure this is imported
+use App\Models\PropertyImage;
+use App\Models\Amenity;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
-use App\Models\Notification; // Make sure this is imported
-use App\Models\User;         // Make sure this is imported
-use Illuminate\Support\Facades\Storage; // Import Storage facade
+use App\Models\Notification;
+use App\Models\User;
 
 class PropertyController extends Controller
 {
+
+
     /**
-     * Display a listing of all properties for the authenticated agent.
+     * Display a listing of all properties (for buyers/public).
      *
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\JsonResponse
      */
+
     public function getAllProperties(Request $request): \Illuminate\Http\JsonResponse
     {
-        $userId = Auth::id();
-
-        if (!$userId) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
-        }
+        $userId = Auth::id(); ;
 
         $query = Property::query()->where('user_id', $userId);
 
@@ -47,64 +45,65 @@ class PropertyController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function newProperty(Request $request): \Illuminate\Http\JsonResponse
-    {
-        if (!Auth::check()) {
-            return response()->json(['message' => 'Unauthenticated.'], 401);
-        }
-
-        $data = $request->validate([
-            'address' => 'required|string|max:255',
-            'city' => 'required|string|max:255',
-            'title' => 'required|string|max:255',
-            'landArea' => 'required|numeric',
-            'price' => 'required|numeric',
-            'bedroom' => 'required|integer',
-            'bathroom' => 'required|integer',
-            'parking' => 'required|integer',
-            'longDescreption' => 'required|string',
-            'shortDescreption' => 'required|string',
-            'constructionArea' => 'required|numeric',
-            'livingArea' => 'required|numeric',
-            'property_listing_id' => 'required|exists:listing_types,id',
-            'property_type_id' => 'required|exists:property_types,id',
-            'purchase_id' => 'required|exists:purchases,id',
-            'images' => 'array|nullable',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
-            'amenities' => 'array|nullable',
-            'amenities.*' => 'exists:amenities,id',
-        ]);
-
-        $data['user_id'] = Auth::id();
-
-        DB::beginTransaction();
-        try {
-            $property = Property::create($data);
-
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $image) {
-                    $path = $image->store('property_images', 'public');
-                    $property->images()->create(['imageUrl' => $path]);
-                }
-            }
-
-            if (isset($data['amenities'])) {
-                $property->amenities()->sync($data['amenities']);
-            }
-
-            $recipients = User::whereIn('role_id', [1, 3])->pluck('id')->toArray();
-            Notification::sendToMultipleUsers(
-                $recipients,
-                'property_created',
-                "A new property '{$property->title}' has been added to the system."
-            );
-
-            DB::commit();
-            return response()->json($property->load('images', 'amenities'), 201);
-        } catch (\Exception $e) {
-            DB::rollBack();
-            return response()->json(['message' => 'Error creating property: ' . $e->getMessage()], 500);
-        }
+{
+    if (!Auth::check()) {
+        return response()->json(['message' => 'Unauthenticated.'], 401);
     }
+
+    $data = $request->validate([
+        'address' => 'required|string|max:255',
+        'city' => 'required|string|max:255',
+        'title' => 'required|string|max:255',
+        'landArea' => 'required|numeric',
+        'price' => 'required|numeric',
+        'bedroom' => 'required|integer',
+        'bathroom' => 'required|integer',
+        'parking' => 'required|integer',
+        'longDescreption' => 'required|string',
+        'shortDescreption' => 'required|string',
+        'constructionArea' => 'required|numeric',
+        'livingArea' => 'required|numeric',
+        'property_listing_id' => 'required|exists:listing_types,id',
+        'property_type_id' => 'required|exists:property_types,id',
+        'images' => 'array|nullable',
+        'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048',
+        'amenities' => 'array|nullable',
+        'amenities.*' => 'exists:amenities,id',
+    ]);
+
+    $data['user_id'] = Auth::id();
+
+    DB::beginTransaction();
+    try {
+        $property = Property::create($data);
+
+        if ($request->hasFile('images')) {
+            foreach ($request->file('images') as $image) {
+                $path = $image->store('property_images', 'public');
+                $property->images()->create(['imageUrl' => $path]);
+            }
+        }
+
+        if (isset($data['amenities'])) {
+            $property->amenities()->sync($data['amenities']);
+        }
+       $recipients = User::whereIn('role_id', [1, 3])->pluck('id')->toArray();
+
+Notification::sendToMultipleUsers(
+    $recipients,
+    'property_created',
+    "A new property '{$property->title}' has been added to the system."
+);
+
+
+        DB::commit();
+        return response()->json($property->load('images', 'amenities'), 201);
+    } catch (\Exception $e) {
+        DB::rollBack();
+        return response()->json(['message' => 'Error creating property: ' . $e->getMessage()], 500);
+    }
+}
+
 
     /**
      * Display the specified property.
@@ -126,6 +125,7 @@ class PropertyController extends Controller
         return response()->json($property, 200);
     }
 
+
     /**
      * Update the specified property in storage.
      *
@@ -144,71 +144,59 @@ class PropertyController extends Controller
             return response()->json(['message' => 'Unauthorized. You do not own this property.'], 403);
         }
 
-        // Validate incoming data
-        // For array inputs (like amenities, images), Laravel expects numeric keys for validation,
-        // and when used with FormData from Angular, they arrive as 'amenities[]'.
-        // So 'amenities.*' and 'images.*' are correct for validation.
         $data = $request->validate([
-            'address' => 'sometimes|string|max:255',
-            'city' => 'sometimes|string|max:255',
-            'title' => 'sometimes|string|max:255',
-            'landArea' => 'sometimes|numeric',
-            'price' => 'sometimes|numeric',
-            'bedroom' => 'sometimes|integer',
-            'bathroom' => 'sometimes|integer',
-            'parking' => 'sometimes|integer',
-            'longDescreption' => 'sometimes|string',
-            'shortDescreption' => 'sometimes|string',
-            'constructionArea' => 'sometimes|numeric',
-            'livingArea' => 'sometimes|numeric',
-            'property_listing_id' => 'sometimes|exists:listing_types,id',
-            'property_type_id' => 'sometimes|exists:property_types,id',
-            'purchase_id' => 'sometimes|exists:purchases,id',
-            'images' => 'array|nullable',
-            'images.*' => 'image|mimes:jpeg,png,jpg,gif|max:2048', // Validate new image uploads
-            'amenities' => 'array|nullable',
+            'address' => 'sometimes|nullable|string|max:255',
+            'city' => 'sometimes|nullable|string|max:255',
+            'title' => 'sometimes|nullable|string|max:255',
+            'landArea' => 'sometimes|nullable|numeric',
+            'price' => 'sometimes|nullable|numeric',
+            'bedroom' => 'sometimes|nullable|integer',
+            'bathroom' => 'sometimes|nullable|integer',
+            'parking' => 'sometimes|nullable|integer',
+            'longDescreption' => 'sometimes|nullable|string',
+            'shortDescreption' => 'sometimes|nullable|string',
+            'constructionArea' => 'sometimes|nullable|numeric',
+            'livingArea' => 'sometimes|nullable|numeric',
+            'property_listing_id' => 'sometimes|nullable|exists:listing_types,id',
+            'property_type_id' => 'sometimes|nullable|exists:property_types,id',
+            'images' => 'nullable|array',
+            'images.*.image_url' => 'url',
+            'amenities' => 'nullable|array',
             'amenities.*' => 'exists:amenities,id',
         ]);
 
         DB::beginTransaction();
         try {
-            // Update property details, excluding images and amenities for now
-            // Use $request->input() to get data that might not be validated or present
-            // Or use $data array for validated inputs
-            $property->update($data); // This updates all simple fields passed in $data
+            $property->update($data);
 
-            // Handle images:
-            // If new image files are uploaded, clear old images and add new ones.
-            if ($request->hasFile('images')) {
-                // Delete old images from storage and database
-                foreach ($property->images as $image) {
-                    Storage::disk('public')->delete($image->imageUrl);
-                    $image->delete();
+            if (isset($data['images'])) {
+                $newImageUrls = collect($data['images'])->pluck('image_url')->toArray();
+                $property->images()->whereNotIn('image_url', $newImageUrls)->delete();
+                foreach ($data['images'] as $image) {
+                    $property->images()->updateOrCreate(
+                        ['image_url' => $image['image_url'], 'property_id' => $property->id],
+                        ['image_url' => $image['image_url']]
+                    );
                 }
-
-                // Upload and save new images
-                foreach ($request->file('images') as $image) {
-                    $path = $image->store('property_images', 'public');
-                    $property->images()->create(['imageUrl' => $path]);
-                }
+            } else {
+                $property->images()->delete();
             }
 
-
-            // Handle amenities
             if (isset($data['amenities'])) {
-                // sync will detach amenities not in the new list and attach new ones
                 $property->amenities()->sync($data['amenities']);
             } else {
-
                 $property->amenities()->detach();
             }
+           $recipients = User::whereIn('role_id', [1, 3])->pluck('id')->toArray();
 
-            $recipients = User::whereIn('role_id', [1, 3])->pluck('id')->toArray();
-            Notification::sendToMultipleUsers(
-                $recipients,
-                'property_updated',
-                "The property '{$property->title}' has been updated."
-            );
+Notification::sendToMultipleUsers(
+    $recipients,
+    'property_updated',
+    "The property '{$property->title}' has been updated."
+);
+
+
+
 
             DB::commit();
             return response()->json($property->load('images', 'amenities'), 200);
@@ -237,21 +225,19 @@ class PropertyController extends Controller
 
         DB::beginTransaction();
         try {
-            // Delete associated images from storage
-            foreach ($property->images as $image) {
-                Storage::disk('public')->delete($image->imageUrl);
-            }
-            $property->images()->delete(); // Delete image records from DB
-            $property->amenities()->detach(); // Detach amenities
-            $property->delete(); // Delete the property record
+            $property->images()->delete();
+            $property->amenities()->detach();
+            $property->delete();
 
             DB::commit();
-            $recipients = User::whereIn('role_id', [1, 3])->pluck('id')->toArray();
-            Notification::sendToMultipleUsers(
-                $recipients,
-                'property_deleted',
-                "The property '{$property->title}' has been deleted."
-            );
+          $recipients = User::whereIn('role_id', [1, 3])->pluck('id')->toArray();
+
+Notification::sendToMultipleUsers(
+    $recipients,
+    'property_deleted',
+    "The property '{$property->title}' has been deleted."
+);
+
 
             return response()->json(['message' => 'Property deleted successfully'], 200);
         } catch (\Exception $e) {

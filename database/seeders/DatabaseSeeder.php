@@ -21,7 +21,7 @@ class DatabaseSeeder extends Seeder
         UserSeeder::class,
 
 
-        PurchaseSeeder::class,
+       
 
 
         PropertySeeder::class,

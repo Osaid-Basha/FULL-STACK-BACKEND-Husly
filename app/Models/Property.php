@@ -25,7 +25,7 @@ class Property extends Model
         'property_type_id',
         'property_listing_id',
         'user_id',
-        'purchase_id',
+
         'amenity_id'
 
 
@@ -43,10 +43,7 @@ class Property extends Model
         return $this->hasMany(propertyImage::class);
     }
 
-    public function purchase(): \Illuminate\Database\Eloquent\Relations\BelongsTo
-    {
-        return $this->belongsTo(purchase::class);
-    }
+  
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {

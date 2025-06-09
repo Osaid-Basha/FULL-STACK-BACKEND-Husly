@@ -62,7 +62,7 @@ public function login(Request $request)
     $request->validate([
         'email' => 'required|email',
         'password' => 'required|string',
-        'role' => 'required|string',
+        
         'remember_me' => 'sometimes|boolean'
     ]);
 
@@ -76,9 +76,6 @@ public function login(Request $request)
         return response()->json(['message' => 'Your account is pending approval'], 403);
     }
 
-    if (strtolower($user->role->type) !== strtolower($request->role)) {
-        return response()->json(['message' => 'You are not authorized to login as this role'], 403);
-    }
 
 
    $trustedToken = $request->header('X-Trusted-Device');
@@ -178,7 +175,8 @@ public function verify2FA(Request $request)
 
     $user = User::with('role')->findOrFail($request->user_id);
 
-    if ($user->two_factor_code !== $request->code) {
+    if (!Hash::check($request->code, $user->two_factor_code))
+ {
         return response()->json(['message' => 'Invalid verification code'], 401);
     }
 
