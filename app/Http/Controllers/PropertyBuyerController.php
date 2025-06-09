@@ -78,12 +78,12 @@ class PropertyBuyerController extends Controller
     $property = Property::with([
         'property_type',
         'listing_type',
-        'purchase',
+        
         'images',
         'user.profile',
         'amenities',
         'reviews.user.profile',
-        'reviews.replies'      
+        'reviews.replies'
     ])->find($id);
 
     if (!$property) {
