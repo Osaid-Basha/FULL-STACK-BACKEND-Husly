@@ -113,7 +113,7 @@ public function resetTwoFactorCode()
     {
         return $this->hasMany(Favorites::class);
     }
-    
+
 
     public function replay ()
     {
@@ -121,6 +121,10 @@ public function resetTwoFactorCode()
     }
     // User.php
 
+public function reviews()
+{
+    return $this->hasMany(\App\Models\Review::class, 'user_id');
+}
 
     public function sentMessages()
     {
