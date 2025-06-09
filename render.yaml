@@ -1,10 +1,23 @@
 services:
   - type: web
     name: laravel-api
-    env: php
-    buildCommand: "composer install && php artisan config:cache && php artisan route:cache"
-    startCommand: "php artisan serve --host=0.0.0.0 --port=$PORT"
+    env: docker
     plan: free
+    dockerfilePath: ./Dockerfile
     envVars:
       - key: APP_ENV
         value: production
+      - key: APP_KEY
+        value: base64:YOUR_APP_KEY_HERE
+      - key: DB_CONNECTION
+        value: mysql
+      - key: DB_HOST
+        value: mysql.railway.internal
+      - key: DB_PORT
+        value: 3306
+      - key: DB_DATABASE
+        value: railway
+      - key: DB_USERNAME
+        value: root
+      - key: DB_PASSWORD
+        value: hwOzKjyWaYPuhENqCuBEjMEbVjiTNaMJ
