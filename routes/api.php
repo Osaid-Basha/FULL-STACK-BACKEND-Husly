@@ -21,11 +21,17 @@ use App\Http\Controllers\AgentStatsController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
 
+use Illuminate\Support\Facades\Artisan;
+
+Route::get('/migrate-now', function () {
+    Artisan::call('migrate', ['--force' => true]);
+    return '✅ Migrations executed!';
+});
 
 Route::get('/user', function (Request $request) {
     return $request->user();
 })->middleware('auth:sanctum');
-use Illuminate\Support\Facades\Artisan;
+
 
 Route::get('/fix-env', function () {
     Artisan::call('config:clear');

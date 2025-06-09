@@ -62,7 +62,7 @@ public function login(Request $request)
     $request->validate([
         'email' => 'required|email',
         'password' => 'required|string',
-        
+
         'remember_me' => 'sometimes|boolean'
     ]);
 
@@ -108,7 +108,7 @@ if ($trustedToken) {
             'device_token' => $trusted_token,
             'device_name' => $request->header('User-Agent'),
             'ip_address' => $request->ip(),
-            'expires_at' => now()->addDays(30)
+            'expires_at' => Carbon::now()->addDays(30)
         ]);
 
         $token = $user->createToken('authToken')->plainTextToken;
