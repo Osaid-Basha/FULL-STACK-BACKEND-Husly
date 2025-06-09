@@ -30,7 +30,11 @@ RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 RUN chown -R www-data:www-data /var/www
 
 # تشغيل Laravel
-CMD php artisan serve --host=0.0.0.0 --port=8080
+CMD php artisan migrate --force && php artisan db:seed --force && php artisan serve --host=0.0.0.0 --port=8080
+
 # تأكد من صلاحيات الكتابة على مجلد storage و bootstrap/cache
+RUN chmod -R 775 storage bootstrap/cache && \
+    chown -R www-data:www-data storage bootstrap/cache
+RUN php artisan migrate --force
 RUN chmod -R 775 storage bootstrap/cache && \
     chown -R www-data:www-data storage bootstrap/cache
