@@ -22,7 +22,14 @@ use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
 
 use Illuminate\Support\Facades\Artisan;
+use Illuminate\Support\Facades\DB;
 
+
+
+Route::get('/check-tables', function () {
+    $tables = DB::select('SHOW TABLES');
+    return response()->json($tables);
+});
 
 
 
