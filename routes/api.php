@@ -23,6 +23,12 @@ use App\Http\Controllers\NotificationController;
 
 use Illuminate\Support\Facades\Artisan;
 
+
+Route::get('/migrate-now', function () {
+    Artisan::call('migrate', ['--force' => true]);
+    return response()->json(['message' => '✅ Migrations executed!']);
+});
+
 Route::get('/migrate-now', function () {
     Artisan::call('migrate', ['--force' => true]);
     return '✅ Migrations executed!';
