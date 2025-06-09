@@ -2,14 +2,27 @@
 builder = "NIXPACKS"
 
 [phases.setup]
-nixPkgs = ["php", "php81Packages.composer", "nodejs"]
+nixPkgs = [
+  "php82",               # أو php81 حسب المتوفر عندك
+  "php82Extensions.mbstring",
+  "php82Extensions.pdo_mysql",
+  "php82Extensions.tokenizer",
+  "php82Extensions.xml",
+  "php82Extensions.curl",
+  "php82Extensions.fileinfo",
+  "php82Extensions.openssl",
+  "php82Extensions.zip",
+  "php82Packages.composer",
+  "nodejs",
+  "npm"
+]
 
 [phases.install]
 cmds = [
   "php -v",
   "composer -V",
   "composer validate",
-  "composer install --ignore-platform-reqs -vvv", # verbose output
+  "composer install --ignore-platform-reqs -vvv",
   "npm install"
 ]
 
