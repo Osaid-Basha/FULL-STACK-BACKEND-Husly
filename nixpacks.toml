@@ -2,20 +2,7 @@
 builder = "NIXPACKS"
 
 [phases.setup]
-nixPkgs = [
-  "php82",               # أو php81 حسب المتوفر عندك
-  "php82Extensions.mbstring",
-  "php82Extensions.pdo_mysql",
-  "php82Extensions.tokenizer",
-  "php82Extensions.xml",
-  "php82Extensions.curl",
-  "php82Extensions.fileinfo",
-  "php82Extensions.openssl",
-  "php82Extensions.zip",
-  "php82Packages.composer",
-  "nodejs",
-  "npm"
-]
+nixPkgs = ["nodejs_18", "php", "php81Packages.composer"]
 
 [phases.install]
 cmds = [
