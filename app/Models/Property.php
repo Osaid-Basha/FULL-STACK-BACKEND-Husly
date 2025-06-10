@@ -43,7 +43,7 @@ class Property extends Model
         return $this->hasMany(propertyImage::class);
     }
 
-  
+
 
     public function user(): \Illuminate\Database\Eloquent\Relations\BelongsTo
     {
@@ -59,20 +59,20 @@ class Property extends Model
     }
     public function negotiations(): \Illuminate\Database\Eloquent\Relations\HasMany
     {
-    return $this->hasMany(Negotiation::class);
-}
+        return $this->hasMany(Negotiation::class);
+    }
 
-public function reviews()
-{
-    return $this->hasManyThrough(
-        Review::class,
-        BuyingRequest::class,
-        'property_id',   // Foreign key on buying_requests table
-        'buying_id',     // Foreign key on reviews table
-        'id',            // Local key on properties table
-        'id'             // Local key on buying_requests table
-    );
-}
+    public function reviews()
+    {
+        return $this->hasManyThrough(
+            Review::class,
+            BuyingRequest::class,
+            'property_id',   // Foreign key on buying_requests table
+            'buying_id',     // Foreign key on reviews table
+            'id',            // Local key on properties table
+            'id'             // Local key on buying_requests table
+        );
+    }
 
 
 }
