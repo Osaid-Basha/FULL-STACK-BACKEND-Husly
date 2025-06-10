@@ -145,13 +145,14 @@ Route::middleware(['auth:sanctum','agent'])->prefix('agent')->group(function () 
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
-    Route::get('/profile', [ProfileController::class, 'getProfileByUid']);//done
-    Route::post('/profile/update', [ProfileController::class, 'updateProfileInfo']);//done
-    Route::delete('/profile/remove-picture', [ProfileController::class, 'removeProfilePicture']);//done
-    Route::post('/profile/update-picture', [ProfileController::class, 'updateProfilePicture']);//done
-    Route::get('/chat/list', [MessageController::class, 'chatList']);//done
-    Route::post('/messages/send', [MessageController::class, 'send']);//done
-    Route::get('/messages/{userId}', [MessageController::class, 'conversation']);//done
+    Route::get('/profile', [ProfileController::class, 'getProfileByUid']);
+    Route::post('/profile/update', [ProfileController::class, 'updateProfileInfo']);
+    Route::delete('/profile/remove-picture', [ProfileController::class, 'removeProfilePicture']);
+    Route::post('/profile/update-picture', [ProfileController::class, 'updateProfilePicture']);
+    Route::get('/chat/list', [MessageController::class, 'chatList']);
+    Route::post('/messages/send', [MessageController::class, 'send']);
+    Route::get('/messages/{userId}', [MessageController::class, 'conversation']);
+    Route::post('/messages/start-chat', [MessageController::class, 'startNewChat']);
 
     Route::get('/notifications', [NotificationController::class, 'myNotifications']);
     Route::put('/notifications/{notificationId}/read', [NotificationController::class, 'markAsRead']);
