@@ -26,8 +26,12 @@ COPY . .
 # تحميل الباكج
 RUN composer install --no-interaction --prefer-dist --optimize-autoloader
 
-# إعطاء صلاحيات
-RUN chown -R www-data:www-data /var/www
+# إعطاء صلاحيات للمجلدات
+RUN chmod -R 775 storage bootstrap/cache && \
+    chown -R www-data:www-data storage bootstrap/cache
 
-# تشغيل Laravel
-CMD php artisan serve --host=0.0.0.0 --port=8080
+# تشغيل Laravel عند بدء الحاوية (وليس أثناء الـ build)
+CMD php artisan config:cache && \
+    php artisan migrate --force && \
+    php artisan db:seed --force && \
+    php artisan serve --host=0.0.0.0 --port=8080

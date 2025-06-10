@@ -20,50 +20,12 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\AgentStatsController;
 use App\Http\Controllers\MessageController;
 use App\Http\Controllers\NotificationController;
+use App\Http\Controllers\GeneralStatisticsController;
 
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\DB;
 
 
-
-Route::get('/run-seeder', function () {
-    try {
-        Artisan::call('db:seed', ['--force' => true]);
-
-        return response()->json([
-            'message' => '✅ All seeders executed from DatabaseSeeder',
-            'output' => Artisan::output(),
-        ]);
-    } catch (\Throwable $e) {
-        return response()->json([
-            'error' => true,
-            'message' => $e->getMessage()
-        ], 500);
-    }
-});
-
-
-
-Route::get('/check-tables', function () {
-    $tables = DB::select('SHOW TABLES');
-    return response()->json($tables);
-});
-
-
-
-Route::get('/migrate-now', function () {
-    try {
-        Artisan::call('migrate', ['--force' => true]);
-        return response()->json(['message' => '✅ Migrations executed!']);
-    } catch (\Exception $e) {
-        return response()->json([
-            'error' => true,
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString()
-        ], 500);
-    }
-});
-;
 
 
 
@@ -72,11 +34,6 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:sanctum');
 
 
-Route::get('/fix-env', function () {
-    Artisan::call('config:clear');
-    Artisan::call('config:cache');
-    return '✅ Laravel environment refreshed!';
-});
 
 // Authentication routes
 Route::post('/register', [AuthController::class, 'register']);//done
@@ -145,6 +102,7 @@ Route::middleware(['auth:sanctum','agent'])->prefix('agent')->group(function () 
 
 
 Route::middleware(['auth:sanctum'])->group(function () {
+
     Route::get('/profile', [ProfileController::class, 'getProfileByUid']);
     Route::post('/profile/update', [ProfileController::class, 'updateProfileInfo']);
     Route::delete('/profile/remove-picture', [ProfileController::class, 'removeProfilePicture']);
@@ -153,10 +111,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/messages/send', [MessageController::class, 'send']);
     Route::get('/messages/{userId}', [MessageController::class, 'conversation']);
     Route::post('/messages/start-chat', [MessageController::class, 'startNewChat']);
-
+Route::get('/general/stats', [GeneralStatisticsController::class, 'getGeneralStats']);//done
     Route::get('/notifications', [NotificationController::class, 'myNotifications']);
     Route::put('/notifications/{notificationId}/read', [NotificationController::class, 'markAsRead']);
     Route::delete('/notifications/{notificationId}', [NotificationController::class, 'deleteNotification']);
+
 });
 
 
