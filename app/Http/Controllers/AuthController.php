@@ -62,7 +62,6 @@ public function login(Request $request)
     $request->validate([
         'email' => 'required|email',
         'password' => 'required|string',
-
         'remember_me' => 'sometimes|boolean'
     ]);
 
@@ -76,58 +75,35 @@ public function login(Request $request)
         return response()->json(['message' => 'Your account is pending approval'], 403);
     }
 
+    // 🔒 Check if trusted device exists
+    $trustedToken = $request->header('X-Trusted-Device');
+    if ($trustedToken) {
+        $trusted = TrustedDevice::where('user_id', $user->id)
+            ->where('device_token', $trustedToken)
+            ->where('expires_at', '>', now())
+            ->first();
 
+        if ($trusted) {
+            $token = $user->createToken('authToken')->plainTextToken;
 
-   $trustedToken = $request->header('X-Trusted-Device');
-Log::info('X-Trusted-Device Received:', [$trustedToken]);
-
-if ($trustedToken) {
-    $trusted = TrustedDevice::where('user_id', $user->id)
-        ->where('device_token', $trustedToken)
-        ->where('expires_at', '>', now())
-        ->first();
-
-    if ($trusted) {
-        $token = $user->createToken('authToken')->plainTextToken;
-
-        return response()->json([
-            'message' => 'Login via trusted device',
-            'user' => $user,
-            'token' => $token
-        ], 200);
-    }
-}
-
-
-
-    if ($request->boolean('remember_me')) {
-        $trusted_token = Str::random(64);
-
-       TrustedDevice::create([
-            'user_id' => $user->id,
-            'device_token' => $trusted_token,
-            'device_name' => $request->header('User-Agent'),
-            'ip_address' => $request->ip(),
-            'expires_at' => now()->addDays(30)
-        ]);
-
-        $token = $user->createToken('authToken')->plainTextToken;
-
-        return response()->json([
-            'message' => 'Login successful without 2FA',
-            'user' => $user,
-            'token' => $token,
-            'trusted_token' => $trusted_token
-        ], 200);
+            return response()->json([
+                'message' => 'Login via trusted device',
+                'user' => $user,
+                'token' => $token
+            ], 200);
+        }
     }
 
+    // 👇 IF trusted token not found or expired → proceed to 2FA
     $user->generateTwoFactorCode();
     $user->sendTwoFactorCodeEmail();
+
     return response()->json([
         'message' => 'Please verify your 2FA code',
         'user_id' => $user->id,
     ], 200);
 }
+
 
 
 
