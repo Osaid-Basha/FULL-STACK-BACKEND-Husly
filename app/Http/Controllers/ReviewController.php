@@ -22,7 +22,8 @@ public function storeReview(Request $request)
 
     $buying = BuyingRequest::where('id', $request->buying_id)
         ->where('user_id', Auth::id())
-        ->where('status', true)
+        ->where('status', 1)
+
         ->whereNotNull('negotiation_id')
         ->first();
 

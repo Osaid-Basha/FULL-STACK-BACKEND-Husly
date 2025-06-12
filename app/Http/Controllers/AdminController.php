@@ -44,7 +44,7 @@ class AdminController extends Controller
     $user = User::find($id);
 
     if ($user) {
-        $user->delete(); // حذف المستخدم
+        $user->delete();
         return response()->json([
             'status' => 200,
             'message' => 'User request rejected and user deleted successfully'

@@ -28,9 +28,10 @@ public function property()
 {
     return $this->belongsTo(Property::class);
 }
-   public function buyingRequest()
+public function buyingRequest()
 {
-    return $this->hasOne(BuyingRequest::class);
+    return $this->hasOne(BuyingRequest::class, 'negotiation_id');
 }
+
 
 }

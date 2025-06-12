@@ -9,10 +9,10 @@ use App\Models\Notification;
 class BuyingRequestController extends Controller
 {
     //
-   public function confirm($id)
+   public function confirm($negotiationId)
 {
-    $buyingRequest = BuyingRequest::where('id', $id)
-        ->where('status', false)
+    $buyingRequest = BuyingRequest::where('negotiation_id', $negotiationId)
+        ->where('status', 0)
         ->first();
 
     if (!$buyingRequest) {
@@ -22,11 +22,10 @@ class BuyingRequestController extends Controller
         ]);
     }
 
-    $buyingRequest->status = true;
+    $buyingRequest->status = 1;
     $buyingRequest->type = 'confirmed';
     $buyingRequest->save();
 
-    // إرسال إشعار للمشتري مش للمالك
     $buyerId = $buyingRequest->user_id;
 
     Notification::sendToUser(
@@ -41,5 +40,6 @@ class BuyingRequestController extends Controller
         'buying_request' => $buyingRequest
     ]);
 }
+
 
 }

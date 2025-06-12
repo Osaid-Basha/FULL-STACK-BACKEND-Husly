@@ -30,16 +30,26 @@ public function getMyNegotiations()
 {
     $userId = Auth::id();
 
-   
-    $mySentOffers = Negotiation::with(['property', 'user'])
-        ->where('user_id', $userId)
-        ->get();
+    $mySentOffers = Negotiation::with([
+        'property.images',     
+        'property.property_type',
+        'property.user.profile',
+        'user',
+        'buyingRequest'
+    ])
+    ->where('user_id', $userId)
+    ->get();
 
-
-    $myAcceptedOffers = Negotiation::with(['property', 'user'])
-        ->where('user_id', $userId)
-        ->where('status', 'accepted')
-        ->get();
+    $myAcceptedOffers = Negotiation::with([
+        'property.images',
+        'property.property_type',
+        'property.user.profile',
+        'user',
+        'buyingRequest'
+    ])
+    ->where('user_id', $userId)
+    ->where('status', 'accepted')
+    ->get();
 
     return response()->json([
         'status' => 200,
@@ -47,6 +57,7 @@ public function getMyNegotiations()
         'my_accepted_offers' => $myAcceptedOffers,
     ]);
 }
+
 
 
 

@@ -35,13 +35,13 @@ class AgentStatsController extends Controller
         $total = DB::table('properties')->where('user_id', $user->id)->count();
         $sold = DB::table('properties')
             ->where('user_id', $user->id)
-            ->whereNotNull('purchase_id')
+
             ->count();
         $available = DB::table('properties')
             ->where('user_id', $user->id)
             ->where('available', 1)
             ->count();
-        $rented = $total - $sold - $available;
+        $rented = $total - $available  ;
 
         return response()->json([
             'agentName' => "{$user->first_name} {$user->last_name}",

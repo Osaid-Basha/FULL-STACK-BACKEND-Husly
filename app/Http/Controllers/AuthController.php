@@ -27,7 +27,7 @@ public function register(Request $request)
         'role_id' => 'required|exists:roles,id',
     ]);
 
-    $status = in_array($validated['role_id'], [2, 3]) ? 0 : 1; // 0 = Pending, 1 = Active
+    $status = in_array($validated['role_id'], [2]) ? 0 : 1; // 0 = Pending, 1 = Active
 
     $user = User::create([
         'first_name' => $validated['first_name'],
@@ -75,7 +75,6 @@ public function login(Request $request)
         return response()->json(['message' => 'Your account is pending approval'], 403);
     }
 
-    // 🔒 Check if trusted device exists
     $trustedToken = $request->header('X-Trusted-Device');
     if ($trustedToken) {
         $trusted = TrustedDevice::where('user_id', $user->id)
@@ -94,7 +93,7 @@ public function login(Request $request)
         }
     }
 
-    // 👇 IF trusted token not found or expired → proceed to 2FA
+
     $user->generateTwoFactorCode();
     $user->sendTwoFactorCodeEmail();
 

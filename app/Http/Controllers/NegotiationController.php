@@ -146,7 +146,7 @@ class NegotiationController extends Controller
     public function received()
 {
     $agent = Auth::user();
-    $negotiations = $agent->receivedNegotiations->load(['user', 'property']);
+    $negotiations = $agent->receivedNegotiations->load(['user', 'property', 'buyingRequest']);
 
     return response()->json([
         'status' => 200,
