@@ -81,8 +81,8 @@ Route::middleware(['auth:sanctum','buyer'])->prefix('buyer')->group(function () 
     Route::delete('/favorites', [FavoriteController::class, 'deleteFavorite']);//done
      Route::get('/negotiations/purchases', [PurchaseController::class, 'getMyNegotiations']);//done
 });
-
 Route::get('/properties', [PropertyBuyerController::class, 'getAllProperties']);//done
+
 Route::middleware(['auth:sanctum','agent'])->prefix('agent')->group(function () {
     Route::get('/negotiations', [NegotiationController::class, 'received']);//done
     Route::put('/negotiations/{id}/accept', [NegotiationController::class, 'acceptNegotiation']);//done
