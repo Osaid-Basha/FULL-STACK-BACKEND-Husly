@@ -1,2 +1,1 @@
-web: vendor/bin/heroku-php-apache2 public/
-release: php artisan migrate --force && php artisan config:clear && php artisan cache:clear && php artisan config:cache
+php artisan migrate --force && php artisan config:cache && vendor/bin/heroku-php-apache2 public/
