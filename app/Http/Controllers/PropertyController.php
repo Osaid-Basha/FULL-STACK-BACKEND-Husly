@@ -78,7 +78,6 @@ class PropertyController extends Controller
 
         DB::beginTransaction();
         try {
-            // يتم إنشاء العقار باستخدام جميع البيانات التي تم التحقق منها
             $property = Property::create($data);
 
             if ($request->hasFile('images')) {

@@ -11,7 +11,7 @@ class DatabaseSeeder extends Seeder
 {public function run(): void
 {
     $this->call([
-        // الجداول الأساسية المستقلة
+
         RoleSeeder::class,
         AmenitySeeder::class,
         PropertyTypeSeeder::class,
@@ -21,8 +21,8 @@ class DatabaseSeeder extends Seeder
         UserSeeder::class,
 
 
-       
 
+        
 
         PropertySeeder::class,
 
