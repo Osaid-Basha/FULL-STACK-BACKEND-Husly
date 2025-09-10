@@ -17,10 +17,13 @@ nixPkgs = [
 
 [phases.install]
 cmds = [
-  "composer install --ignore-platform-reqs --no-dev --optimize-autoloader"
+  "composer install --no-dev --optimize-autoloader --ignore-platform-reqs"
 ]
 
 [phases.build]
 cmds = [
-  "echo 'Build done... artisan commands skipped here.'"
+  "echo 'Build done, artisan commands will run in release phase.'"
 ]
+
+[start]
+cmd = "vendor/bin/heroku-php-apache2 public/"
