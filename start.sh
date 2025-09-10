@@ -1,11 +1,13 @@
 #!/bin/bash
+set -e
 
-# استنى قاعدة البيانات لحد ما تجهز
-until php artisan migrate --force; do
-  echo "⏳ Waiting for database..."
-  sleep 5
-done
+echo "🚀 Running migrations and cache clear..."
+php artisan migrate --force || true
+php artisan config:clear
+php artisan cache:clear
+php artisan route:clear
+php artisan view:clear
+php artisan key:generate --force
 
-php artisan config:cache
+echo "🚀 Starting Laravel server..."
 php artisan serve --host=0.0.0.0 --port=8080
-
