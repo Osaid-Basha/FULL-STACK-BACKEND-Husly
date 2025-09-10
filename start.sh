@@ -7,4 +7,5 @@ until php artisan migrate --force; do
 done
 
 php artisan config:cache
-vendor/bin/heroku-php-apache2 public/
+php artisan serve --host=0.0.0.0 --port=8080
+
