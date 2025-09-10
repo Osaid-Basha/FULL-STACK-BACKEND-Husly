@@ -12,3 +12,4 @@ cmds = [
 
 [start]
 cmd = "bash start.sh"
+
