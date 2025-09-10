@@ -68,7 +68,7 @@ Route::middleware(['auth:sanctum','buyer'])->prefix('buyer')->group(function () 
     Route::post('/negotiations/propose', [NegotiationController::class, 'propose']);//done
 
     Route::post('/reviews', [ReviewController::class, 'storeReview']);//done
-    Route::get('/properties', [PropertyBuyerController::class, 'getAllProperties']);//done
+    
     Route::get('/properties/search', [PropertyBuyerController::class, 'search']);//done
     Route::get('/agents/search/{keyword}', [BuyerController::class, 'searchAgents']);//done
     Route::get('/properties/{id}', [PropertyBuyerController::class, 'show']);//done
@@ -82,7 +82,7 @@ Route::middleware(['auth:sanctum','buyer'])->prefix('buyer')->group(function () 
      Route::get('/negotiations/purchases', [PurchaseController::class, 'getMyNegotiations']);//done
 });
 
-
+Route::get('/properties', [PropertyBuyerController::class, 'getAllProperties']);//done
 Route::middleware(['auth:sanctum','agent'])->prefix('agent')->group(function () {
     Route::get('/negotiations', [NegotiationController::class, 'received']);//done
     Route::put('/negotiations/{id}/accept', [NegotiationController::class, 'acceptNegotiation']);//done
