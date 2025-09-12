@@ -17,12 +17,16 @@ class NotificationController extends Controller
     {
         $request->validate([
             'type' => 'required|string|max:50',
-            'message_content' => 'required|string|max:255',
+            'message_content' => 'nullable|string|max:255',
+            'title' => 'nullable|string|max:100',
+            'action_url' => 'nullable|url',
         ]);
 
         $notification = Notification::create([
+            'title' => $request->title ?? Notification::defaultTitleFor($request->type),
             'type' => $request->type,
-            'message_content' => $request->message_content,
+            'message_content' => Notification::refineMessage($request->type, $request->message_content ?? ''),
+            'action_url' => $request->action_url,
         ]);
 
         $buyers = User::where('role_id', 3)->get();
